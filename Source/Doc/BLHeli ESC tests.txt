@@ -1,0 +1,52 @@
+Testing BLHeli-32 35A DShot 1200 with 4 blade 50 mm prop
+Starts at around 1150 USec servo signal. about 60 ma
+
+1304 USec 900 ma
+1400 2.0 Amps
+1500 3.5 amps
+
+
+Second BLHeli Oneshot 125 10A
+Starts around 1159 USec 117 ma
+1204 USec 174 ma
+1500 USec 956 ma
+1734 2.0 Amps
+1829 3.0 Amps max speed
+
+Back to earlier BE1104 4000KV motor in pipe
+Second BLHeli Oneshot 125 10A
+Starts at around 1170 USec 120 ma
+1550 USec 1.001 amp
+1675 USed 2.005 amps
+1800 USec 2.65 amps max
+
+
+Earlier BE1104 4000KV motor in pipe
+BLHeli-32 35A DShot 1200 with 4 blade 50 mm prop
+starts at 1150 USec 56 ma
+1283 500 ma
+1355 1000 ma
+1550 2000 ma max speed
+
+
+Third BLHeli 10A
+starts a 1035 116 ma
+1 amp at 1330
+2 amp at 1515
+max at 2540 ma 1540
+motor holddown screws were loose
+
+starts a 1030 109 ma
+1 amp at 1330  same as before loose screws
+2 amp at 1515
+max at 2540 ma 1540
+
+
+BE1104 with three blade prop
+starts at 1030
+max at 1540  970 ma
+
+
+RS1306 with three blade prop
+starts at 1030
+max at 1540 500 ma

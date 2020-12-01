@@ -1,0 +1,16 @@
+//Do not use parentheses in prompt strings, use angle, square or curly brackets
+//if needed for clarity!
+Hi, donald. Lines without a recognized macro like MBEGIN, MITEM, MITEM, or MEND int
+the first recognized word are ignored by the menu setup function. Space is not a separator
+for tokenizing. We only use comma and left and right paretheses and tab and single quote and double quote
+as delimiters.
+
+MBEGIN(MainMenu, Menu 1)
+FITEM('1', Read servo 0 USec, GetServoUsec, RTNVAL, 0, "", "", "")
+FITEM('2', Move servo 0 to 2200, SetServoUsec, 0, 0, 2200,  "", "")
+FITEM('3', Move servo 0 to 800, SetServoUsec, 0, 0, 800, "", "")
+FITEM('4', Move servo 1 to 2200, SetServoUsec, 0, 1, 2200,  "", "")
+FITEM('5', Move servo 1 to 800, SetServoUsec, 0, 1, 800, "", "")
+FITEM('r', Read servo USec, GetServoUsec, RTNVAL, Servo Index:, "", "", "")
+FITEM('w', Set servo USec , SetServoUsec, 0, Servo Index:, USec:, "", "")
+MEND

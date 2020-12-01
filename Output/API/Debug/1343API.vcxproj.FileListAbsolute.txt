@@ -1,0 +1,2 @@
+C:\appb_platform\Output\API\Debug\1343API.dll
+C:\appb_platform\Output\API\Debug\1343API.pdb

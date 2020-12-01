@@ -1,0 +1,107 @@
+DLLLink.cpp  The stubs for link functions within the API DLL. These are called by the DLL Export stubs which package the API_HANDLE within LSEL.
+ Example: U8 MasterBlockDown(LINK_SEL LSel, LINK_STAT *LStat, DOWN_PTR_U8 SrcPtr, U16 Count, U32 DestPtr)
+		  {
+			return (U8) Link(LSel, &MDef, LStat, 0, SrcPtr, Count, DestPtr);
+		  }
+
+
+
+ExpLink.cpp The export stubs for link functions exposed directly by API DLL
+	  has ELHdr.h and mlink.h included at top
+  Example:
+ 	DECL_SPEC API_STAT CALL_CONV MasterBlockDown(API_DEVICE_HANDLE Handle, U8 &RtnVal, DOWN_PTR_U8 SrcPtr, U16 Count, U32 DestPtr)
+	{
+		LINK_STAT LStat;
+
+		LINK_SEL LSel;
+
+		LSel.ChannelIndex = 0;
+		LSel.CommType = INVALID_COMM_TYPE;
+		LSel.LHand = Handle;
+		RtnVal = MasterBlockDown(LSel, &LStat, SrcPtr, Count, DestPtr);
+		return LinkStatToAPIStat(LStat);
+	}
+
+
+API.H
+API.cpp has manually generated API functions, Example:
+	DECL_SPEC API_STAT CALL_CONV Disconnect(API_DEVICE_HANDLE Handle)
+	{
+		bool IsHID = false;
+		int Index;
+		Index = GetHandleIndex(Handle, IsHID);
+		//We don't care if USB or Serial
+		if ((Index >= 0) && (Index < MAX_HANDLES))
+		{
+			if (CloseHandle(Handle) != 0)
+			{
+				return COMB_API_STAT(INVAL_SUBSYS, INVAL_FIDX, STAT_OK);
+			}
+		}
+		return COMB_API_STAT(INVAL_SUBSYS, INVAL_FIDX , STAT_COMM_CLOSE_FAIL);
+	}
+
+------------------------
+So for memory transfers, we need to be sure our transfer sizes are within limits of the channel
+packet capacity. It looks like we look up the
+
+InitDeviceCommunication
+GetMaxLReturnSize
+GetMaxLSendSize
+
+
+During link call we have the HandleIndex as part of LSel a we use GetMaxLinkReturnSize(LINK_SEL) and
+GetMaxLinkSendSize(LINK_SEL) overloads.
+
+GetMaxLSendSize(HANDLE) and GetMaxLReturnSize(HANDLE) look up device in handle table
+
+
+-------------------------------------------------------------------------------
+//As a general rule, motor should be at starting point in list for first segment. Adding
+//a segment will work from current position at a stop. Alternatively, we could generate a trapezoidal move to starting position.
+//Adding a segment will generate a move with specified Acc, lasting a specified time. It will have been computed
+//based on assumed position and starting velocity. For an initial segment, that starting velocity is zero.  We will
+//be working thru a position list. The list will either wrap at end, or reflect back and go back down to zero in reverse
+//if it is a symmetrical profile. As the segment generator goes through a list, it will typically apply an acceleration to
+//the rate of motion through the table. The segment generated will be guaranteed to move the table step distance. It will
+//in addition leave the motor at a velocity appropriate for the next segment starting velocity.It will have access to previous step
+//or know that velocity was zero. It can predict the time for next segment by applying acceleration to current 1/T. From that
+//and the distance, it can get average velocity of next segment. It will also know average velocity of it's own segment
+//which is simply current segment distance/T. We could always leave a segment at it's own average velocity. Most of the time,
+//the velocity will be increasing or decreasing. If we had a triangular velocity profile, while ramping up, the speed of
+//each segment would be increasing. We would ideally keep a constant acceleration. That would mean no change in the middle
+//of the segment. So each segment would start at a velocity below it's average vel, and end at a velocity higher than it's
+//average velocity. But duh that is what a constant acceleration does. So we look at average velociy of next segment, and
+//see the change from average velocity of current segment. If average velocity of next segment is higher than
+//that of current segment, we end at 1/2 half the delta lower or end at  VN + VN/2 - (VN+1)/2. So this rule
+//is applied by step table processor. We can change the rule, but it always calls for a two-step segment and specifies
+//the distance, time and end velocity.
+//
+//This delta VThe ave
+//AddSegment requires that there be at least one segment in the fifo, and it will use it's end Velocity and end Position
+//as initial condition for the move. We have been thinking of specifying the move time. This way we can have multiple axis
+//moves stepping through a position table in synch on the various axes. The different axes will in general be doing different
+//length moves in the same period of time. It is clear that we cannot have constant acceleration and cover a specified distance
+// in a specified time and at the same time end at a specified velocity. It would only work for certain sequences of position.
+//But, if we let the end velocity be unconstrained, we just need to let Acc be what it needs to be to generate an area under
+//velocity curve equal to specified distance. Cant visualize how this would behave over time as far as ripple on Acc and Vel.
+//But I do need us to hit weighpoints on time. At worst we have to break each segment into two parts. Lets try
+//it with unconstrained end velocity and constrained delta position and time and see how it behaves. Could simulate it on Windows PC
+//with a cosine table. IT seems like there will be nothing to damp the oscillatory behavior for a relatively constant velocity sequence
+//starting from a dead stop. It will end first segment at 2 times velocity, and end the second at zero and so on forever.
+//So maybe we do all as two step segments. Always at half the segment interval. We only constrain endpoint at even endpoints. We have
+//two accelerations. We end with constrained velocity and position at even segments.
+AddSegment(double EndPosition,	double EndVelocity, U32 Ticks)
+
+
+So for a segment, we now have two accelerations and one endpoint velocity, and one endpoint position.
+The first segment does not constrain velocity and we do not care about position there, so we have two
+ll params, the first acc and the second acc. The second segment gets its acceleration from first but
+has two ll params, the endpoint pos and the endpoint velocity. Each segment has same tick time. Mayb
+
+
+
+
+Since we are precomputing our segments, we are not checking in on actual motor command position at
+all at time of computation. We do however have access to position before starting, when we start to load the
+list. We could in fact have absolute positions built into the segment list.
