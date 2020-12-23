@@ -1,0 +1,3 @@
+#My first stab at a gitignore file for PPB platform
+Output/
+.vs/
