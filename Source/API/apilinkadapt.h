@@ -21,7 +21,7 @@
 #define COMM_TYPE_SERIAL 1
 #define COMM_TYPE_HID 2
 
-bool ConnectToUSB(HANDLE & Handle, U16 VID, U16 PID, U8 Index);
+//bool ConnectToUSB(HANDLE & Handle, U16 VID, U16 PID, U8 Index);
 bool ConnectToSerial(HANDLE & Handle, U8 CommIndex);
 bool CloseAPIHandle(HANDLE Handle);
 

@@ -1,4 +1,4 @@
-//--------------------------------------------------------------------------*
+ //--------------------------------------------------------------------------*
 //
 //                  Copyright (C) Bio-Rad Laboratories 1997
 //
@@ -47,7 +47,8 @@ static bool LinkSendBlock(LINK_CTRL &LCtrl, U8 Flags, void *Ptr, U32 ByteCount);
 static bool LinkGetBlock(LINK_CTRL &LCtrl, U8 Flags, void *Ptr, U32 ByteCount);
 static U64 LinkGetReturn(LINK_CTRL &LCtrl, B64Union &u, U8 ReturnSize);
 
-U64 Link(LINK_SEL LSel, MLINK_DEF *MDef, LINK_STAT *LinkStat, U8 FunCode, ...)
+U64 Link(LINK_SEL LSel, MLINK_DEF *MDef, U8 FunCode, ...)
+
 {
 	float FVal;
 	U32 * U32Ptr;
@@ -61,32 +62,40 @@ U64 Link(LINK_SEL LSel, MLINK_DEF *MDef, LINK_STAT *LinkStat, U8 FunCode, ...)
 	U8 ArgSize;
 	unsigned int i, ArgCnt;
 	LINK_CTRL LCtrl;
+	LINK_STAT LStat;
 	B64Union u;
 
 	va_start( ap, FunCode );
 
 	FIdx = (UCHAR)(FunCode & 0xFF);//get 8 bit function code
-	LinkStat->FIdx = FIdx;
-	LinkStat->Channel = LSel.ChannelIndex;
+	LStat.FIdx = FIdx;
+	LStat.Channel = LSel.ChannelIndex;
+	LStat.CommType = LSel.CommType;
+	LStat.Stat = LE_NO_ERROR;
+
 	if((FunCode >= MDef->FunctionCount) )
 	{
-		LinkStat->Stat = LE_BAD_FUNCODE_M;
+		LStat.Stat = LE_BAD_FUNCODE_M;
+		LINK_STATUS(LStat);
 		return 0;
 	}
 
 	if(!VALIDATE_LINK_SEL(LSel))
 	{
-		LinkStat->Stat = LE_BAD_FORMAT_M;
+	    LStat.Stat = LE_BAD_FORMAT_M;
+	    LINK_STATUS(LStat);
 		return 0;
 	}
 
 	LCtrl.LSel = LSel;
-	LinkStat->Stat = InitLCtrl(LCtrl);
-	if(LinkStat->Stat != LE_NO_ERROR)
+	LStat.Stat = InitLCtrl(LCtrl);
+	if(!GOOD_LINK_STATUS(LStat))
 	{
+	    LINK_STATUS(LStat);
 		return 0;//bad handle or problem with buffer allocation
 	}
-  	LCtrl.Buffer[LCtrl.NextIndex++] = LCtrl.FIdx = FIdx;//put function code in buffer
+  	LCtrl.Buffer[LCtrl.NextIndex++] = FIdx;
+  	LCtrl.FIdx = FIdx;
 	LCtrl.RtnSize = MDef->FDef[FIdx].fsz;
 
 	for(i = 0; i < MAX_ARGS; ++i)
@@ -126,8 +135,8 @@ U64 Link(LINK_SEL LSel, MLINK_DEF *MDef, LINK_STAT *LinkStat, U8 FunCode, ...)
 		{
 			if(Arg[i] > MAX_LINK_BLOCK_SIZE)
 			{
-				LinkStat->Stat = LE_BLOCK_SIZE;
-				//LinkError(*LinkStat);
+				LStat.Stat = LE_BLOCK_SIZE;
+				LINK_STATUS(LStat);
 				return 0;
 			}
 		}
@@ -149,8 +158,8 @@ U64 Link(LINK_SEL LSel, MLINK_DEF *MDef, LINK_STAT *LinkStat, U8 FunCode, ...)
 				//LCtrlBuf to hold but this may be more than we can actually send.
 				if(!LinkSendBlock(LCtrl, Flags[i], UDPtrs[i], Arg[i]))
 				{
-					LinkStat->Stat = LE_BLOCK_SIZE;
-					//LinkError(*LinkStat);
+					LStat.Stat = LE_BLOCK_SIZE;
+					LINK_STATUS(LStat);
 					return 0;
 				}
 				break;
@@ -171,8 +180,8 @@ U64 Link(LINK_SEL LSel, MLINK_DEF *MDef, LINK_STAT *LinkStat, U8 FunCode, ...)
 				break;		//no flag
 
 			default:
-				LinkStat->Stat = LE_BAD_FLAGS;
-				//LinkError(*LinkStat);
+				LStat.Stat = LE_BAD_FLAGS;
+				LINK_STATUS(LStat);
 				return 0;
 		}
 	}
@@ -180,27 +189,28 @@ U64 Link(LINK_SEL LSel, MLINK_DEF *MDef, LINK_STAT *LinkStat, U8 FunCode, ...)
 	LCtrl.RtnSize = LCtrl.RtnSize + BlockUpCount;
 	if((LCtrl.NextIndex - LCtrl.StartIndex) > MAX_SEND_SIZE(LCtrl.LSel))
 	{
-		LinkStat->Stat = LE_BLOCK_SIZE;
+	    LStat.Stat = LE_BLOCK_SIZE;
+		LINK_STATUS(LStat);
 		return 0;
 	}
 	if(LCtrl.RtnSize > MAX_RETURN_SIZE(LCtrl.LSel))
 	{
-		LinkStat->Stat = LE_BLOCK_SIZE;
+		LStat.Stat = LE_BLOCK_SIZE;
+		LINK_STATUS(LStat);
 		return 0;
 	}
 
 	if(DummyTransaction(LCtrl))
 	{
-	    LinkStat->Stat = LE_NO_ERROR;
+	    LINK_STATUS(LStat);//so GetLastLinkError is reset to no LE_NO_ERROR
 	    return 0;
     }
 
-	LinkStat->Stat = LINK_TRANSACT(LCtrl);
-	LinkStat->CommType = LCtrl.LSel.CommType;
+	LStat.Stat = LINK_TRANSACT(LCtrl);
 
 //We want to check size of return here
 //-------------------------------------
-	if(GoodLinkStatus(*LinkStat))
+	if(LStat.Stat == LE_NO_ERROR)
 	{
 	   	LinkGetReturn(LCtrl, u, MDef->FDef[FIdx].fsz);//get return value out of response packet
 		for ( i = 0; i < ArgCnt; ++i)
@@ -212,15 +222,21 @@ U64 Link(LINK_SEL LSel, MLINK_DEF *MDef, LINK_STAT *LinkStat, U8 FunCode, ...)
 				case F_UP_PTR_U32:
 				if(!LinkGetBlock(LCtrl, Flags[i], UDPtrs[i], Arg[i]))
 				{
-					LinkStat->Stat = LE_BLOCK_UP_SHORT;
+					LStat.Stat = LE_BLOCK_UP_SHORT;
+					LINK_STATUS(LStat);
 					return(u.X64);
 				}
 				break;
 			}
 		}
+		LINK_STATUS(LStat);
 	   	return(u.X64);
 	}
-	return 0;
+	else
+	{
+	    LINK_STATUS(LStat);
+	    return 0;
+	}
 }
 
 

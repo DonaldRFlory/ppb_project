@@ -17,7 +17,7 @@
  * warranty that such application will be suitable for the specified
  * use without further testing or modification.
 ****************************************************************************/
-#pragma message("compiling type.h")
+//#pragma message("compiling type.h")
 #include "hostopsys.h"
 #ifndef TYPE_H
 #define TYPE_H

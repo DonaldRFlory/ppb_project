@@ -10,6 +10,9 @@
 //--------------------------------------------------------------------------*/
 #include "mastadapt.h"
 #include "linkctrl.h"
+static U8 BoardAddress = 0;
+extern LINK_STAT_CB_P LinkStatCB;
+LINK_STAT LastStatus;
 
 //This is here because different implementations may use an external buffer
 //rather than the one that is part of LINK_CTRL. Multiple channel implentation
@@ -18,97 +21,35 @@
 L_STAT InitLCtrl(LINK_CTRL &LCtrl)
 {
 	U32 BuffSize = 0;
-	//L_STAT LStat;
-	//if(LCtrl.LSel.ChannelIndex == DC_CH)
-	//{
-	//	//So... If we are in local mode, we will not be allowing calls to DC_CH channel
-	//	//Hence GetInstrumentBuffer should fail. In Remote mode, there should be
-	//	//a buffer for each Instrument.
-	//	LStat = CHAPIGetInstrumentBuffer(LCtrl.LSel.LHand, LCtrl.Buffer, BuffSize);
-	//	if(LStat != LE_NO_ERROR)
-	//	{
-	//		return LStat;
-	//	}
-	//	/LCtrl.BuffSize = BuffSize;
-	//}
-	//else
-	//{ //for device transactions we will use the small buffer in
-      //LCtrl structure allocated on the stack.
-		LCtrl.Buffer = LCtrl.LCBuff;
-		LCtrl.BuffSize = LCB_TOTSIZE;
-		for(U32 i = 0; i < LCtrl.BuffSize; ++i)
-		{
-			LCtrl.Buffer[i] = 0;//small buffer to aid debugging
-		}
-	//}
+	//LCtrl.LSel.ChannelIndex = BoardAddress;
+	LCtrl.Buffer = LCtrl.LCBuff;
+	LCtrl.BuffSize = LCB_TOTSIZE;
+	for(U32 i = 0; i < LCtrl.BuffSize; ++i)
+	{
+		LCtrl.Buffer[i] = 0;//small buffer to aid debugging
+	}
+	LCtrl.StartIndex = LCtrl.NextIndex = LCB_PRESPACE;
 	LCtrl.StartIndex = LCtrl.NextIndex = LCB_PRESPACE;
 	LCtrl.FIdx = 255;  //Illegal value
 	LCtrl.RtnSize = 0;
 	return LE_NO_ERROR;
 }
 
-
-#if 0
-//-----------------------------------------------------------------
-//Convert info in LStat structure to APILinkStat (one format of API_STAT)
-// 12-bit LinkStat (in 0-255 range),  4-bit Source, 4-bit Channel, 4-bit unused, 8-bit FIdx
-// packed most sig bit to least sig bit in 32 bit word
-//------------------------------------------------------------------
-U32 LinkStatToAPIStat(LINK_STAT LStat)
-{
-	API_STAT LinkAPIStat;
-	U32 Channel, Stat, Source;
-
-	if(LStat.Stat == LE_NO_ERROR)
-	{
-		return 0;
-	}
-	Channel = LStat.Channel & 0X0F;
-	Stat = LStat.Stat;
-	#if 0
-    switch(LStat.CommType)
-	{
-		case CT_LOCAL:
-			Source = ERR_SRC_LINK_L;
-			break;
-
-		case CT_INST_1:
-			Source = ERR_SRC_LINK_R0;
-			break;
-
-		case CT_INST_2:
-			Source = ERR_SRC_LINK_R1;
-			break;
-
-		case CT_INST_3:
-			Source = ERR_SRC_LINK_R2;
-			break;
-
-		case CT_INST_4:
-			Source = ERR_SRC_LINK_R3;
-			break;
-
-		default:
-			Source = ERR_SRC_LINK_RX; //unrecognized remote handle
-			break;
-	}
-	#else
-	    Source = 0;
-	#endif
-	LinkAPIStat = (Stat << 20) | (Source << 16) | (Channel << 12) | LStat.FIdx;
-	//if(Stat != LE_BLOCK_UP_SHORT)
-	//{
-	//    CMAPILogError(LinkAPIStat);//we are going to let this slide for benefit of CMAPICFXCommand()
-	//}
-	return LinkAPIStat;
-}
-#endif
-
-//for now, we will pack the link call macro status in low byte.
-//We may pack more info in higher three bytes.
 bool GoodLinkStatus(LINK_STAT LStat)
 {
-	return (LStat.Stat & 0xFF) == LE_NO_ERROR;
+	return (LStat.Stat == LE_NO_ERROR);
+}
+
+
+//Used to report result of link transaction
+void LinkStatus(LINK_STAT Status)
+{
+    LastStatus = Status;
+    if(LinkStatCB != 0)
+    {
+        //report link error to foreground via callback if installed.
+        (LinkStatCB)(Status.Stat, Status.FIdx, Status.Channel, Status.CommType);
+    }
 }
 
 
@@ -154,3 +95,15 @@ U32 GetMaxLinkSendSize(U8 Channel)
 {
     return 0;
 }
+
+
+ //sets board address for all serial calls on party line serial bus
+ void SetBoardAddressAdapt(U8 Address)
+ {
+     BoardAddress = Address;
+ }
+
+ U8 GetBoardAddress()
+ {
+    return BoardAddress;
+ }

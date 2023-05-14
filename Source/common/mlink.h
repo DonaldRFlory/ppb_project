@@ -13,8 +13,6 @@
 #ifndef MLINK_H
 #define MLINK_H
 
-#pragma message("compiling MLINK.H")
-
 #include "type.h"
 #include "linkerror.h"
 #include "link.h"
@@ -72,8 +70,7 @@ typedef struct
   MLFUN_DEF *FDef;
 } MLINK_DEF;
 
-
-U64 Link(LINK_SEL LSel, MLINK_DEF *MDef, LINK_STAT *LinkStat, U8 FunCode, ...);
+U64 Link(LINK_SEL LSel, MLINK_DEF *MDef, U8 FunCode, ...);
 L_STAT LinkTransact(LINK_CTRL &LCtrl);
 
 

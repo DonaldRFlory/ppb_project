@@ -50,6 +50,7 @@ typedef struct
 	U8 FunSize;
 	U8 FIdx;
 	U8 ReturnStatus;
+	U8 BoardAddress;
 } LINK_CONTROL;
 
 //These may control different behavior of RcvChar() and SendChar()
@@ -108,7 +109,6 @@ int SendU8(U8 Value);
 //#endif
 
 #endif	//of ifndef SLINK_H
-
 
 
 

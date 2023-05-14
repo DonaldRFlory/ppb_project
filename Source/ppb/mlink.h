@@ -13,8 +13,6 @@
 #ifndef MLINK_H
 #define MLINK_H
 
-//#pragma message("--3GTestSW/include/MLINK.H--")
-
 #include "type.h"
 #include "linkerror.h"
 #include "link.h"
@@ -72,13 +70,8 @@ typedef struct
   MLFUN_DEF *FDef;
 } MLINK_DEF;
 
-#ifndef TM_API
-//U64 Link( UINT fidx, ... );//antique link function
-//U64 Link(unsigned char Channel, MLINK_DEF *MDef, UINT FunCode, ...);
-#endif
-
-U64 Link(LINK_SEL LSel, MLINK_DEF *MDef, LINK_STAT *LinkStat, U16 FunCode, ...);
-LINK_STAT LinkTransact(LINK_CTRL &LCtrl);
+U64 Link(LINK_SEL LSel, MLINK_DEF *MDef, U8 FunCode, ...);
+L_STAT LinkTransact(LINK_CTRL &LCtrl);
 
 
 //Functions for legacy programs using old style link calls------------
