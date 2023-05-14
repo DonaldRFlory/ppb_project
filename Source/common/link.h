@@ -21,6 +21,11 @@
 #define Encaps(A) A
 #include "type.h"
 
+//Some implementations of link have party-line serial bus and allow addressing of eight boards
+//with three top bits of function index.
+//This leaves us with a maximum of 32 possible link functions in linklist
+#define BOARD_ADDRESS_MASK  0XE0
+
 //no built-ins for new LDFUtil
 #define LINK_BLOCK_DOWN 0
 #define LINK_BLOCK_UP   1
@@ -54,6 +59,18 @@
 #define F_FLOAT     	0X10
 #define ARG_SIZE_MASK  	0X0F
 
+#ifndef TYPE_H
+//Link pointer types:
+typedef unsigned char * UP_PTR_U8;
+typedef unsigned short * UP_PTR_U16;
+typedef unsigned int * UP_PTR_U32;
+typedef float * UP_PTR_FLOAT;
+typedef unsigned char * DOWN_PTR_U8;
+typedef unsigned short * DOWN_PTR_U16;
+typedef unsigned int * DOWN_PTR_U32;
+typedef float * DOWN_PTR_FLOAT;
+#endif
+
 #ifndef LINK_ERROR_H
 #include "linkerror.h"
 #endif
@@ -63,3 +80,42 @@
 //  If slave uses INTEL (LITTLE_ENDIAN) order, it must reshuffle bytes.
 
 #endif
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

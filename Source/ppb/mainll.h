@@ -1,7 +1,5 @@
 //---------------------------------------------------------------------------
 //
-//     Copyright (c) 2018 Bio-Rad Laboratories
-//
 //      File: MainLL.H
 //
 //      Purpose: This file is the master list of functions callable over a
@@ -14,7 +12,6 @@
 //      Note:    Use only C++ style comments in this file
 //               due to simple minded ldfutil.cpp parser.
 //
-//  	  This is a test file for early development of 3GX Dll
 //
 //---------------------------------------------------------------------------
 
@@ -39,12 +36,25 @@
 //Following three define turn on exporting of DLL functions in Modes 2 and 3 and 9 of LDFUtil. The idea
 //is that only some of the functions in a linklist will be exported from the DLL and this allows
 //turning exporting on and off during linklist processing. In this example we export everything
-#define BIO_LDF_EXPORT 1	   //for benefit of LDFUTIL.EXE
+#define DRF_LDF_EXPORT 1	   //for benefit of LDFUTIL.EXE
 //This define only applies to DLL exports
-#define BIO_LDF_Prefix PPB_API
+#define DRF_LDF_Prefix PPB_API
 
 #include <basicll.h>
 
-U8 SetServoUsec(U8 ServoIndex,U16 USec);
+U8 SetServoUsec(U8 ServoIndex,U16 Usec);
 U16 GetServoUsec(U8 ServoIndex);
-U8 DataUpdate(DOWN_PTR_U16 USecsPtr, U8 USecCount, UP_PTR_U16 ADValsPtr, U8 ADValCount);
+U8 DataUpdate(DOWN_PTR_U16 UsecsPtr, U8 UsecCount, UP_PTR_U16 ADValsPtr, U8 ADValCount);
+U8 SetSolenoid(U8 SolIndex, U8 Value);
+void ServoSlewMove(U8 ServoIndex, U16 UsecTarget, float Velocity);
+void SetStep(U8 StepperIndex, U16 PeriodCount, U16 Steps, U8 Dir);
+void ProgramEEPROM(U16 Address, U8 Value);
+U8 ReadEEPROM(U16 Address);
+U8 ReadTraceBuffer(UP_PTR_U8 TraceValsPtr, U8 TraceValCount);
+U8 SetPWMVal(U8 ServoIndex,U16 Count); //for PCA9685
+U16 SetPWMFreq(U8 ChipIndex, U16 FreqX10);
+//Top 4 bits of USec values below will be the index within the group
+//of the Value in the lower 12 bits. This allows packet to only
+//send values which have changed for link efficiency.
+U8 ServoUpdate(DOWN_PTR_U16 UsecsPtr, U8 UsecCount, U8 GroupIndex);
+void LoadServoUsec(U8 ServoIndex, U16 Usec);

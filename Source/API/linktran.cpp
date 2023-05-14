@@ -7,14 +7,10 @@
 //					forming logic in MASTER.C and communication
 //					channel functions (physical layer).
 //--------------------------------------------------------------------------
-#include "stdafx.h"
 #include <Windows.h>
 #include "mlink.h"
 #include "apilinkadapt.h"
-//#include "masteror.h"
-#include "findhid.h"
-//#include "hiddefs.h"
-#include "hidadapt.h"
+#include "mastadapt.h"
 
 #include <limits.h>
 #define INIT_CRC  		0  /* CCITT: 0xFFFF */
@@ -96,42 +92,6 @@ static bool GoodSlaveStatus(UCHAR CtrlByte)
 }
 
 
-bool FlushResponses(LINK_SEL LSel)
-{
-	unsigned char Buffer[0x41];
-	unsigned char Flag = 0XFF;
-	int i = 0, j = 0;
-	while(QuickGetResponse(LSel, Buffer))
-	{
-		Flag = Buffer[1];
-		++j;
-		if(j > 20)
-		{  //should not be possible, but..
-			return false;
-		}
-	}
-	if(Flag == 0)
-	{ //we are good, last packet was a null packet
-		return true;
-	}
-
-	for(i = 0; i < 66; ++i)
-	{
-		if(GetUSBReport(LSel, Buffer, 20))
-		{
-			if(Buffer[1] == 0)
-			{
-				return true;
-			}
-		}
-		else
-		{  //we timed out on report read. Should not happen
-			return false;
-		}
-	}
-	return false;//read 66 reports and none were null
-}
-
 
 typedef enum
 {
@@ -147,236 +107,28 @@ typedef enum
 	RTN_9
 } RETURN_ENUM;
 
-int GetHIDStreamResponse(LINK_SEL LSel, unsigned char *Buffer, int Length)
-{
-	bool End = false, Fail = false;
-	unsigned char Flag;
-	int ByteIndex = 0, ByteCount = 0;
-	unsigned char PacketCount, PacketIndex = 0;
-	unsigned char PackBuffer[65];
-	int Timeouts = 0;
-	unsigned char Count, i;
-
-	//So we should pull out any null packets. We can allow up to 100 null packets as they come in
-	//at one msec intervals.
-	if(Length > 4095)
-	{
-		Length = 4095;
-	}
-	for(i = 0; i < 100; ++i)
-	{
-		if(GetUSBReport(LSel, PackBuffer, 10))
-		{
-			if((Flag = PackBuffer[1]) != 0)
-			{
-				break;
-			}
-		}
-		else
-		{  //we timed out on report read. Should not happen
-			++Timeouts;
-			if(Timeouts > 10)
-			{
-				return RTN_1;
-			}
-		}
-	}
-	if(i >= 100)
-	{
-		return RTN_2;
-	}
-	//When we get here we have the first non-null packet
-	switch(Flag & HID_FLAG_MASK)
-	{
-		case START_FLAG:
-			PacketCount = Flag & (~HID_FLAG_MASK);
-			Count = 63;
-			break;
-
-		case START_END_FLAG:
-			Count = Flag & (~HID_FLAG_MASK);
-			End = true;
-			break;
-
-		default:
-			return RTN_3;
-	}
-	while(1)
-	{
-		if((Count + ByteCount) > Length)
-		{
-			Fail = true;
-			Count = Length - ByteCount;
-		}
-		for(i = 0; i < Count; ++i)
-		{
-			Buffer[ByteCount++] = PackBuffer[i+2];
-		}
-		if(Fail)
-		{
-			return RTN_4;
-		}
-		if(End)
-		{
-			if(ByteCount == Length)
-			{
-				return RTN_0;
-			}
-			else
-			{
-				return RTN_5;
-			}
-		}
-		++PacketIndex;
-		if((PacketIndex) >= PacketCount)
-		{
-			return RTN_6;
-		}
-		if(GetUSBReport(LSel, PackBuffer, 20))
-		{
-			Flag = PackBuffer[1];
-			switch(Flag & HID_FLAG_MASK)
-			{
-				case MIDDLE_FLAG:
-					if((Flag & (~HID_FLAG_MASK)) != PacketIndex)
-					{
-						return RTN_7; //probably missed a packet
-					}
-					Count = 63;
-					break;
-
-				case END_FLAG:
-						Count = Flag & (~HID_FLAG_MASK);
-					End = true;
-					break;
-
-				default:
-					return RTN_8;
-			}
-		}
-		else
-		{  //we timed out on report read. Should not happen
-			return RTN_9;
-		}
-	}
-}
-
-//We will fail if we cannot send it within 100 msec.
-bool SendHIDStreamCommand(LINK_SEL LSel, unsigned char *Buffer, int Length)
-{
-	unsigned char Timeouts = 0;
-	unsigned char Count, i;
-	int ByteIndex = 0;
-	unsigned char PackBuff[65];
-	unsigned char PacketCount, PacketIndex = 0;
-
-	if(Length > 4095)
-	{
-		Length = 4095;
-	}
-	PackBuff[0] = 0;//the report ID which is always zero
-	PacketCount = Length/63;	//max possible is 65 packets
-	if(Length % 63)
-	{
-		++PacketCount;
-	}
-	while(PacketIndex < PacketCount)
-	{
-		if(PacketIndex == 0)
-		{
-			if(PacketCount >= 2)
-			{
-				PackBuff[1]	= (PacketCount & (~HID_FLAG_MASK)) | START_FLAG;
-				Count = 63;
-			}
-			else
-			{
-				Count = (unsigned char)Length;
-				PackBuff[1]	= ((Count) & (~HID_FLAG_MASK)) | START_END_FLAG;
-			}
-		}
-		else if(PacketIndex >= (PacketCount - 1))
-		{  //this is the final packet of two or more
-			Count = (unsigned char)(Length - ByteIndex);
-			PackBuff[1]	= (Count & (~HID_FLAG_MASK)) | END_FLAG;
-		}
-		else
-		{  //This is a middle packet of two or more
-			Count = 63;
-			PackBuff[1] = (PacketIndex & (~HID_FLAG_MASK)) | MIDDLE_FLAG;
-		}
-		Count += 2; //cause our index starts at 2
-		for(i = 2; i < Count; ++i)
-		{  //copy data into current packet
-			PackBuff[i] = Buffer[ByteIndex++];
-		}
-		while(!SendUSBReport(LSel, PackBuff, 20, false))
-		{
-			++Timeouts;
-			if(Timeouts >= 6)
-			{
-				return false;
-			}
-		}
-		++PacketIndex;
-	}
-	return true;
-}
-
-LINK_STAT StreamHIDTransact(LINK_CTRL &LCtrl)
-{
-	U8 FIdx;
-	LINK_STAT LStat;
-	bool SendResult;
-	int ResponseResult;
-	U32 PayloadLength = LCtrl.NextIndex - LCtrl.StartIndex;
-
-	LStat.FIdx = LCtrl.FIdx;
-	if((PayloadLength  < 1) || (PayloadLength > GetMaxLinkSendSize(LCtrl.LSel)))
-	{
-		LStat.Stat = LE_BAD_LT_CALL_D;
-		return LStat;
-	}
-
-	FlushResponses(LCtrl.LSel);
-	SendResult = SendHIDStreamCommand(LCtrl.LSel, &LCtrl.Buffer[LCtrl.StartIndex], PayloadLength);
-	if(!SendResult)
-	{
-		LStat.Stat = LE_BAD_SEND_D;
-		return LStat;
-	}
-	//RtnSize does not account for response status byte and function index at beginning of packet
-	ResponseResult = GetHIDStreamResponse(LCtrl.LSel, LCtrl.Buffer, LCtrl.RtnSize + 2);
-	if(ResponseResult != RTN_0)
-	{
-		LStat.Stat = LE_RESP_TIMEOUT_D;
-		return LStat;
-	}
-	LCtrl.NextIndex = LCtrl.RtnSize + 2;
-	LCtrl.StartIndex = 2;
-	LStat.Stat = LCtrl.Buffer[0];
-	FIdx = LCtrl.Buffer[1];
-	if(LStat.Stat == LE_NO_ERROR)
-	{
-		if(FIdx != LStat.FIdx)
-		{
-			LStat.Stat = LE_BAD_CHECK_D;
-		}
-	}
-	return LStat;
- }
-
-
 static U8 FlushBuff[2000];
+//This version is for communication with Arduino. It has 63 byte receive buffer so
+//packets will be short. Not using CRC in this implementation.
+//On entry, LCtrl contains the raw packet, starting with FIdx.
 LINK_STAT SerialTransact(LINK_CTRL &LCtrl)
 {
 	ULONG BytesWritten;
-	U16 CRC;
+	//U16 CRC;
 	LINK_STAT Stat;
 
 	U16 PayloadLength = (U16)(LCtrl.NextIndex - LCtrl.StartIndex);
 
 	Stat.FIdx = LCtrl.FIdx;
+	if(LCtrl.FIdx > MAX_FIDX)
+	{
+		Stat.Stat = LE_BAD_LT_CALL_D;
+		return Stat;
+	}
+
+	//Add the board address to FIdx in the raw packet
+	LCtrl.Buffer[LCtrl.StartIndex] |= (GetBoardAddress() << BOARD_ADDRESS_LEFT_SHIFT);
+
 	if((PayloadLength  < 1) || (PayloadLength > GetMaxLinkSendSize(LCtrl.LSel)))
 	{
 		Stat.Stat = LE_BAD_LT_CALL_D;
@@ -419,7 +171,7 @@ LINK_STAT SerialTransact(LINK_CTRL &LCtrl)
 //the returned FIdx as well as length byte(s) and CRC.
 static U8 GetSerialResponse(LINK_CTRL & LCtrl)
 {
-	U8 Status, FIdx;
+	U8 Status;
 	U16 LenVal, ReadLength, PayloadLength;
 	ULONG  BytesRead;
 
@@ -447,4 +199,3 @@ static U8 GetSerialResponse(LINK_CTRL & LCtrl)
 	//}
 	return Status;
 }
-

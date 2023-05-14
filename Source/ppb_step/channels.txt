@@ -1,0 +1,22 @@
+So in general creation of API for communication with several destination entities,
+I am often thinking of API as each function destined for a specific of hardware entity.
+In the past this was Cycler, Scanner, Imager etc. which may have been parts of an instrument.
+
+Various useage scenarios existed such as test programs working with a particular hardware
+entity at a given time. Now I may be talking to a variety of boards on a shared bus. Boards
+may or may not all be of the same type, that is, having the same function list.
+
+Supposing I make a mechanism with multiple boards such as ping-pong ball shuttling
+mechanism with perhaps several shooters, elevators, gates/diverters etc. A smart-node
+based program might be orchestrating the whole thing. It would frequently be sending one
+command to one board then another to another board.
+
+Presently I am thinking of a test program which allows selecting the target board
+globally for low level testing but also might have higher level tests which
+interact with multiple boards during one test procedure. It might command operations
+with names which selected the board and the operation.
+
+On party-line serial bus, we have one open channel but multiple possible destinations.
+The API handles addressing and switching the target address is very fast relative to
+the communication packet duration. So we select the channel from outside API. API
+applies it when forming packet LINK_SEL.

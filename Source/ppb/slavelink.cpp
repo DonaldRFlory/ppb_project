@@ -1,6 +1,6 @@
 // ..\..\output\ppb_arduino\slavelink.cpp**************************************
 // This file is machine generated from the link definition file
-// output\slvmainll.h by LDFUTIL V2_015
+// Output\ppb_arduino\slvmainll.h by LDFUTIL V2_022
 // Processed in Mode: 0 - Standard stubs Mode
 // It should not be directly edited.
 
@@ -8,7 +8,7 @@
 #include "slvmainll.h"
 
 
-struct LinkDef  SDef[7]=
+struct LinkDef  SDef[17]=
 {
 	{(void (*)())MasterBlockDown, 1, 1, 2, 0, 0},
 	{(void (*)())MasterBlockUp, 1, 2, 1, 0, 0},
@@ -16,7 +16,17 @@ struct LinkDef  SDef[7]=
 	{(void (*)())SetSlaveParameter, 4, 1, 2, 2, 0},
 	{(void (*)())SetServoUsec, 1, 1, 2, 0, 0},
 	{(void (*)())GetServoUsec, 2, 1, 0, 0, 0},
-	{(void (*)())DataUpdate, 1, 1, 1, 0, 0}
+	{(void (*)())DataUpdate, 1, 1, 1, 0, 0},
+	{(void (*)())SetSolenoid, 1, 1, 1, 0, 0},
+	{(void (*)())ServoSlewMove, 0, 1, 2, 4, 0},
+	{(void (*)())SetStep, 0, 1, 2, 2, 1},
+	{(void (*)())ProgramEEPROM, 0, 2, 1, 0, 0},
+	{(void (*)())ReadEEPROM, 1, 2, 0, 0, 0},
+	{(void (*)())ReadTraceBuffer, 1, 1, 0, 0, 0},
+	{(void (*)())SetPWMVal, 1, 1, 2, 0, 0},
+	{(void (*)())SetPWMFreq, 2, 1, 2, 0, 0},
+	{(void (*)())ServoUpdate, 1, 1, 1, 0, 0},
+	{(void (*)())LoadServoUsec, 0, 1, 2, 0, 0}
 };
 
-int  LinkCount = 7;
+int  LinkCount = 17;

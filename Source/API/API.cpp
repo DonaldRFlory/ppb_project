@@ -2,10 +2,15 @@
 //
 #include "api.h"
 #include "apilinkadapt.h"
-#include "dlllink.h"
+//#include "explink.h"
+U8 BoardAddress;
+DFLOGFPTR LogCB = NULL;
+LINK_STAT_CB_P   LinkStatCB = NULL;
 
-//One to one with errors in LINKERR.H at time of this writing, just added leading STAT_
-//to produce the corresponing API_STAT value
+
+#if 0
+    //One to one with errors in LINKERR.H at time of this writing, just added leading STAT_
+//to produce the corresponding API_STAT value
 const API_STAT  LinkToAPIStat[LE_NUM_ERRORS] =
 {
   STAT_OK, //LE_NO_ERROR
@@ -43,8 +48,9 @@ const API_STAT  LinkToAPIStat[LE_NUM_ERRORS] =
   STAT_BAD_API_HANDLE,
   STAT_LE_UNKNOWN,
 };
-
-API_STAT LinkStatToAPIStat(LINK_STAT LStat)
+#endif
+#if 0
+    API_STAT LinkStatToAPIStat(LINK_STAT LStat)
 {
 	U32 Stat;
 	int Index = (int) LStat.Stat;
@@ -57,67 +63,79 @@ API_STAT LinkStatToAPIStat(LINK_STAT LStat)
 	Stat |= LinkToAPIStat[Index] & 0XFFFF;
 	return Stat;
 }
+#endif
 
-DECL_SPEC API_STAT CALL_CONV Disconnect(API_DEVICE_HANDLE Handle)
+void SetBoardAddressAdapt(U8 Address);
+PPB_API void CALL_CONV SetBoardAddress(U8 Address)
+{
+    SetBoardAddressAdapt(Address);
+}
+
+//---------------------------------------
+//  FUNCTION:     RegisterLoggingCallback
+//
+//  DESCRIPTION:  Supplies pointer to function to call for logging from API to main program
+//
+//---------------------------------------
+PPB_API void CALL_CONV  RegisterLoggingCallback(DFLOGFPTR CallbackPointer)
+{
+	LogCB = CallbackPointer;
+} //endof RegisterLoggingCallback
+
+//---------------------------------------
+//  FUNCTION:     RegisterLinkErrorCallback
+//
+//  DESCRIPTION:  Supplies pointer to function to call for logging from API to main program
+//
+//---------------------------------------
+
+PPB_API void CALL_CONV  RegisterLinkStatusCallback(LINK_STAT_CB_P CallbackPointer)
+{
+    LinkStatCB = CallbackPointer;
+} //endof RegisterLinkStatusCallback
+
+
+PPB_API bool CALL_CONV Disconnect(API_DEVICE_HANDLE Handle)
 {
 	if(CloseAPIHandle(Handle))//First checks if it is a valid connection handle
 	{
-		return COMB_API_STAT(INVAL_SUBSYS, INVAL_FIDX, STAT_OK);
+		return true;
 	}
-	return COMB_API_STAT(INVAL_SUBSYS, INVAL_FIDX , STAT_COMM_CLOSE_FAIL);
+	return false;
 }
 
-DECL_SPEC API_STAT CALL_CONV SerialConnect(API_DEVICE_HANDLE &Handle, U8 CommIndex)
+
+PPB_API bool CALL_CONV SerialConnect(API_DEVICE_HANDLE &Handle, U8 CommIndex)
 {
-	API_STAT APIStat = STAT_INSTR_NOT_FOUND;
 	//check for room in handle table, if so try connect. If successful
 	//enter connection in table and return true, handle returned in Handle.
 	if(ConnectToSerial(Handle, CommIndex))
 	{
-		APIStat = STAT_OK;
+		return true;
 	}
-	return COMB_API_STAT(INVAL_SUBSYS, INVAL_FIDX , APIStat);
+	return false;
 }
 
-DECL_SPEC API_STAT CALL_CONV HIDConnect(API_DEVICE_HANDLE &Handle, U16 VID, U16 PID, U8 Index)
+
+PPB_API U32 CALL_CONV GetMaxLinkReturnSize(API_DEVICE_HANDLE Handle)
 {
-	API_STAT APIStat = STAT_INSTR_NOT_FOUND;
-
-	//check for room in handle table, if so try connect. If successful
-	//enter connection in table and return true, handle returned in Handle.
-	if(ConnectToUSB(Handle, VID, PID, Index))
-	{
-		APIStat = STAT_OK;
-	}
-
-	return COMB_API_STAT(INVAL_SUBSYS, INVAL_FIDX , APIStat);
-}
-
-DECL_SPEC API_STAT CALL_CONV HIDCount(int &Count, U16 VID, U16 PID)
-{
-	//Count = CountHIDDevices(VID, PID);
-	Count = 0;
-	return COMB_API_STAT(INVAL_SUBSYS, INVAL_FIDX, STAT_OK);
-}
-
-DECL_SPEC API_STAT CALL_CONV GetMaxLinkReturnSize(API_DEVICE_HANDLE Handle, U32 &Size)
-{
+	U32 Size;
 	if( GetMaxLReturnSize(Handle, Size) )
 	{
-		return COMB_API_STAT(INVAL_SUBSYS, INVAL_FIDX , STAT_OK);
+		return Size;
 	}
-	return COMB_API_STAT(INVAL_SUBSYS, INVAL_FIDX , STAT_INSTR_NOT_FOUND);
+	return 0;
 }
 
-DECL_SPEC API_STAT CALL_CONV GetLinkMaxSendSize(API_DEVICE_HANDLE Handle, U32 &Size)
+PPB_API U32 CALL_CONV GetLinkMaxSendSize(API_DEVICE_HANDLE Handle)
 {
+	U32 Size;
 	if( GetMaxLSendSize(Handle, Size) )
 	{
-		return COMB_API_STAT(INVAL_SUBSYS, INVAL_FIDX , STAT_OK);
+		return Size;
 	}
-	return COMB_API_STAT(INVAL_SUBSYS, INVAL_FIDX , STAT_INSTR_NOT_FOUND);
+	return 0;
 }
-
 
 U32  PunFloatToLong(float Float)
 {

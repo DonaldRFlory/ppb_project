@@ -1,0 +1,61 @@
+Notes on Pyro firing system using ESP32 controlled by web page.
+
+NCV8402 drivers have gate threshold of 2.2V max so can work with 3.3V supply
+for shift registers.
+
+---I/Os for power board--------
+SRClr
+SPI Clk == SHRClk
+SPI MISO  == output from shift register chain
+SPI MOSI  == input to shift register chain
+/SRXfer   == /STRClk
+SRClr   -- clear sr's, goes through fail-safe one-shot
+Keep Alive
+
+
+Shift register holding and output registers are both reset if fail-safe
+times out.
+
+-------Arduino Setup-----------
+Seems I already have the preferences setting in Arduino IDE for ESP32.
+Tried first sketch, the wifi scan and it compiled, loaded, and ran.
+I have LED's connected to GPIO27 and GPIO28.
+Moved one LED to GPIO23, ran blink test program, it blinks.
+Moving right along...
+Connected LEDs back to GPIO27 and GPIO28.
+Preparing to run Unit 2 - Web Server.
+Modified HTML code to make buttons and text smaller, added more buttons,
+actually copies of the two original ones for a total of ten buttons
+down middle of web page. Do not yet know how to arrange in an array, with
+more than one per line.
+
+So am planning to use VSPI with default pins and for starters using SS.
+This works perfectly!
+
+So pins for power board 48-------------
+1  12 V
+2  12 V
+3  Gnd
+4  Gnd
+5  5V
+6  3.3V unused
+7  Gnd
+8  MISO
+9  SPI CLK
+10 MOSI
+11 N.C.
+12 N.C
+13 PWM0  ground it
+14 SRClr ground it
+15 /SRXFR   use it
+16 DrvSense (will be +12 V sense)   ADC0 (GPIO36)
+17 TestSenseB                       ADC3 (GPIO39)
+ 18 TestSenseA                       ADC6 (GPIO34)
+20 KeepAlive (connect to SPI CLK)
+
+Connections to ESP32----------
+3 analog
+CLK, MOSI, MISO, /XFR
+
+from baseboard to ESP32----
+ +5V, Gnd

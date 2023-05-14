@@ -1,0 +1,11 @@
+VALIDATE_LINK_SEL(LSel) : defined in mastadapt.h as ValidateLinkSel(LSel)
+     ValidateLinkSel looks up the handle in the handle table via GetHandleIndex()
+
+InitLCtrl() just sets up buffer and zeros it for debugging.
+
+
+MAX_SEND_SIZE(LCtrl.LSel) : defined in mastadapt.h as GetMaxLinkSendSize(LSel)
+MAX_RETURN_SIZE(LCtrl.LSel) defined in mastadapt.h as  GetMaxLinkReturnSize(LSel)
+  both of above return values saved in HandleTable()
+
+LINK_STATUS(LStat);: defined in mastadapt.h as LinkStatus(LStat)

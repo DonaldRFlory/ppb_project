@@ -1,0 +1,36 @@
+Pins used on PPB controller:
+Desig.     Nano       AT Mega
+D1/TX       1         31 D1
+D0/RX       2         30 D0
+RST         3         29 PC6
+GND         4         21,3,5
+D2          5         32 D2
+D3          6         1  D3
+D4          7         2  D4
+D5          8         9  D5
+D6          9         10 D6
+D7          10        11 D7
+D8          11        12 B0
+D9          12        13 B1
+D10         13        14 B2
+D11         14        15 B3 MOSI
+D12         15        16 B4 MISO
+NC          16        -
+NC          17        -
+D13         18        17  B5/SCLK/TELL_TALE/LED B6?
+3V3         19
+AREF        20
+A0          21
+A1          22
+A2          23
+A3          24
+A4          25
+A5          26
+A6          27      can only be analog
+A7          28      can only be analog
++5V         29
+RST         30
+GND         31
+VIN         32
+
+A0 - A5 are numbered 14-19 (PC0-PC5)

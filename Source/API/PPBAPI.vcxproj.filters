@@ -47,9 +47,6 @@
     <ClCompile Include="..\..\Output\API\ExpLink.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Output\API\dlllink.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="API.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

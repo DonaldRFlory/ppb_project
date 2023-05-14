@@ -1,0 +1,95 @@
+On control board for tube winding fixture, I connected
+Sense 3 and Sense 4 inputs to Analog inputs 6 and 7 on Arduino Nano.
+These are only useable for analog. This frees Analog inputs
+A2 and A3 to be used for digital I/O, notably limit sensors.
+I also connected pads at A4 and A5 to use these as digital I/O.
+So Sense inputs 1-4 are A0, A1, A6, and A7
+
+I support 4 limit switches, LIMIT_1 thru LIMIT_4, connected to
+A2, A3, A4 and A5 Arduino pins.
+
+I am monitoring all four limits in loop(), but only enforcing
+limits for Stepper 2, and strangely, LIMIT1 and LIMIT3 for top
+and bottom limits.
+
+Stepper 3 step is SERVO4_PIN (PWM4)
+Stepper 3 direction is SERVO1_PIN (PWM1)
+
+Stepper 1 step is SERVO3_PIN       (PWM3)
+Stepper 1 direction is SERVO2_PIN  (PWM2)
+
+
+Stepper 2 step is SERVO6_PIN       (PWM6)
+Stepper 2 direction is SERVO5_PIN  (PWM5)
+
+Stepper 4 step is AUX4
+Stepper 4 dir is AUX5
+
+
+---------------------------------------------------
+So I have done several different projects for PPBStep
+1) Four steppers (potentially with ramped moves) controllable over link.
+
+2) Coffee stirrer rotating platform
+    This uses Timer2 to generate steps for X and Y axes.
+    Uses compare interrupt A  only of timer 2.
+    Compare B is only used for indepent use of stepper 4.
+    Uses StepCtrl[2](normally for stepper 3).
+    Uses Stepper3 and Stepper4 control lines.
+    Uses Solenoid4 (AUX2) output signal to show which segment control
+    set is in use for debugging with Logic Analyzer.
+    The Timer2 OCR2 ISR calls a separate function RotISR()
+    when in rotation mode to do the stepping and manage segments.
+
+    During rotation operation, RotServe() is called frequently in
+    background loop to check status of the two rotation segment control
+    structures. These are ping-pong control structure, that is, one is
+    being filled while other is active controlling stepping by ISR.
+    Basically, I do "Circular" moves by computing line segments in background
+    to piecewise approximate a circle. Based on setup parameters, (radius, speed etc)
+    I compute line segments. Each segment has a fractional step increment for X and Y
+    and a direction for X and Y. At each interrupt, ISR adds increment for X and Y to
+    accumulators, and if a step has been accumulated, it is commanded by setting
+    appropriate step pulse. The increment is always less than a step so only
+    one step can occur a t most for each axis per interrupt.
+
+---------------------------------------------------
+Note on stepper timing:
+Timers use 4 USec clock divided from processor clock of 16 MegaHertz.
+The full count of 8 bit timers is 256 giving about a 1 msec period.
+(actually 1024 Usec or 1.024 milliseconds).
+The two OCRs (output compare registers) on each timer allow generating shorter
+periods of count. Since it takes some time to service interrupts, there is a
+minimum practical interval between interrupts maybe around 25 USec or 6 counts
+of timer. At any rate, I don't try to go faster than about 30 KHz or about 6
+count increments.
+ To generate longer intervals for stepper, I have a full period count plus
+ a timer increment count for a full 16 bit value to control step period.
+ This gives 65535 count maximum interal or about .26214 sec for a min freq.
+ of about 4 steps per second. The problem is, that for steps rates lower
+ than 1 KHz corresponding to periods longer than 1 msec, the residual count
+ after timing the full timer count intervals may be two short, causing us
+ to still be in ISR processing last full timer count when the final
+ interrupt occurs and we would miss it. So... To fix this problem, if final
+ timing cycle is two short for a given period, I make the first interrupt
+ cycle be half a full timer count or 128 counts, instead of 256. I count
+ it as a full timer count, then when doing the last interrupt cycle which is
+ then to short, I add the 128 counts to it, making it a safe length.
+
+ Actually, we handle it kind of the reverse of above. We look at full period
+ at start of move, and if it is greater than one full counter cycle, we
+ see how many full counter cycles we need and what the residual count is.
+ Then if residual count is too short, we add 128 to it and set an Adjust
+ flag. We then time the adjusted residual time for the first ISR cycle.
+ Then we time the full count cycles making the last full count cycle a 128
+ count cycle rather than a full count cycle.
+ ---------------------------------------------------
+Ramping is handled by a background function. This is mainly so that floating
+point calculations are not done in ISR context. Though done via Arduino
+loop() function, it is called based on msec tick flags so it is called
+every millisecond. It is also passed an index, and processes 4 steppers
+in round robin fashion so that one stepper is processed on each call
+and each stepper experiences a four millisecond interval between ramp
+processing calls.
+
+

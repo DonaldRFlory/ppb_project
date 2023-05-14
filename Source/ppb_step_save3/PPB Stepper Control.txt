@@ -1,0 +1,286 @@
+Notes on stepper control for helix winder. Using ST-M5045 drivers along with
+the PPB Controller board. The PPB Controller will produce step pulses for up
+to three steppers. For now, not planning to have programmed direction control,
+nor enable. These will be controlled with jumpers. THe PPB controller
+only produces step pulses. Keeping it simple, I will not have ramping, just
+setting of pulse rate in sub-multiples of 1K. 1000, 500, 333.33, 250, 200,
+166.67, 142.86, 125.. I think I will just supply number of steps followed
+by divisor. Possibly I will want a continuous run function. Also maybe a position
+function.
+
+
+Run(ID, Divisor, Direction
+
+May be marginally simpler to program the direction.
+Common enable for all.
+A4, A5, A6, and A7 are free on PPB controller. Also can use Aux I/O x 5.
+So have nine outputs. Also have B5 output available (but complicated
+as this controls built-in LED and TELL_TALE).
+So since A4-A7 are totally unused, am going to use them for A4, A5, A6 as
+stepper enables (active low).
+A7, D2, D3,
+So I can do three steppers with Step, Dir, Enable.
+So enable will be turned on automatically by a move.
+It also will have On/Off control.
+Will require command to turn off after move.
+
+So we have StepperMove() command with a step count up to 65535.
+65535 will be infinite move. IF we send a new move while moving,
+it replaces the count of any currently active move. A move of zero will
+stop an existing move.
+
+The millisecond divisor is sent with the command along with direction.
+
+StepperMove(Index, Divisor, Steps, Direction)
+
+On each millisecond interrupt, we will step any stepper
+whose count is non-zero. We will not keep track of direction of move, but
+will set the direction control line to value received in command.
+So for each stepper, we have an unsigned integer step count which counts
+down if non-zero. We also have a step divider (byte) which is set by
+StepperMove() command and counts up on millisecond interrupts to step
+interval count (one per stepper and set by StepperMove()).
+
+ So nothing will happen as long as Count is zero. If count is non-zero,
+ we decrement step divider, and if it reaches zero we do a step, that is,
+ we activate the step line.
+
+
+
+Ramping control---
+We work on time basis. We start in RAMP_UP state and do a vel adjustment every
+20 milliseconds.  When starting move, we compute TCrit1 which is time to either
+plateau or start of ramp-down. If there is no plateau, TCrit2 is zero, otherwise
+it is the non-zero ramp-down start time.
+During ramp-up, we add to current velocity Acc*0.02, and convert to period and load it.
+During computation, we also see what next state will be.
+
+SO our periods must be at least 10 counts. We can time periods up to 256 counts in one
+cycle. Problem is if we have a period whose remainder is  less than 10 counts after
+a number of 256 count timings. So maybe we devise a way to break up one of the full
+counts to less than full count, say maybe half count, then add the half count to remainder
+to get a count long enough. Maybe we for longer periods, we always time half, then for last
+cycle we add the last half time to the remainder. THe problem occurs when the residual is
+too small. We need to time as many 128 counts as needed then add 128 to the remainder.
+So we preprocess the period a bit so that it consists of a count of 128 periods plus a remainder
+bigger than our min safe count.
+So we check the remainder. If it is too small, we subtract one from the upper portion,
+and add 128 to lower portion. Then we double the upper portion to get a count of 128 cycles
+rather than a count of 256 cycles. We need to limit the maximum period. Now it is max of 255 * 256 * 4   USec
+or .26 seconds.or 4 Hz.
+
+So incoming period must fit in 15 bits - 32767. We then double the upper byte, which was 127 or less and 254 or
+less when doubled.  We then look at lower byte. If it is less than 128, we add 128 to it and subtract one from
+the high byte. At worst then the low byte would be 255. We already need to handle low bytes of 255 for periods
+just under 256 counts. So.. our timing periods will always be at least 128 counts. So maybe we leave code much
+the same in ISR's. We still time the step pulse with a short delay which is
+
+No actually we allow timing periods as short as say 20 counts. In this case we end up with
+a really short timing cycle for the short timing cycle after the one for the pulse.
+So maybe we time the pulse with padding in ISR.
+
+
+SO to recap: We want to time the Step pulse with code execution delay in ISR.
+We want no timing cycles to be less than the minimum rate we allow, currently 10 counts for step period count,
+each Count representing  being 4 USec based on T0 divide. T0 cycle is 1024 USec.
+
+So when starting step timing in ISR, we want to be sure the low byte of delay is 10 or greater.
+The problem, is that to guarantee this we may need to add counts to smaller low bytes when
+we time the short period. The high byte represents full 256 count periods (for longer periods).
+Was hoping to  preserve most of the full period range. So if we adjust the first count by adding 128,
+we need to flag that so that the first full cycle done based on high byte count is 128, reflecting
+the counts shifted to low byte count. We should never have zero in high byte if the low byte was less
+than 10 or we would have violated min delay limit of ten counts.
+So if we steal half a cycle from high byte counts, we need only make the first count cycle  half
+of a full count. So we use a flag.
+
+
+Want a random move program. It will make moves in a semi random fashion so it does not
+wander out of working range. Basic move is a random choice of direction and distance.
+First choose direction, then randomly choose distance out of range available for selected distance.
+
+Or:
+Cycle of moves from initial longest move to final shortest move of say 500. Direction reverses each time.
+We start it out with a distance and a direction. It intially moves the starting distance, then reverses and moves half that and so on
+until final move which is Minimum given in call. Keeps track of position relative to start.  The position at start
+and the initial direction and distance define the working range.
+
+Or:
+Take an initila move of 56000 at slew speed in negative direction to find zero limit.
+Then take ramp move of 56000 in positive direction starting cycle. After each move reverse
+until minimum move of 500 is done. Then move to opposite end and do the same.
+
+
+ We advance state whenever S2StepCount is zero.
+ We restart the cycle by setting CurMove to zero.
+void  DoCycleMove()
+ {
+    if(CycleMove && (S2StepCount == 0))
+    {
+        if(CurMove == 0)
+        { //time to do the slew move
+            SetStep(1, SLEW_PERIOD_COUNT, HOME_MOVE, SlewDir);
+            CurMove = MAX_MOVE;
+            SlewDir = !SlewDir;
+            CurDir = SlewDir;
+        }
+        else
+        {
+            if(CurMove == MIN_CYCLE_MOVE)
+            {
+                CurMove = 0;
+            }
+            else
+            {
+                CurMove /= 2;
+                CurMove = CurMove < MIN_CYCLE_MOVE ? MIN_CYCLE_MOVE : CurMove;
+                SetStep(1 + 4, 0, CurMove, CurDir);//ramp move
+                CurDir = !CurDir;
+            }
+        }
+    }
+ }
+so maybe another SetStep flag to control cycle move. If it is set, then
+void SetStep(U8 StepperIndex, U16 PeriodCount, U16 Steps, U8 Dir)
+we init SlewDir to the Dir parameter. We set CurMove to zero, and set CycleMove true.
+However if Steps is zero, we set CycleMove to false which kills cycle.
+
+
+
+Ramping function is active whenever StepCount is non-zero. Ramping function
+computes next PeriodValue if the previous one has been consumed. It can tell
+that period value was consumed when TriggerSteps is zero. The ISR sets TriggerSteps
+to zero when it sets a new period. The ramping function  sets the TriggerSteps
+to try to get updates at the RampInterval. IT assumes that RampInterval has elapsed
+since the last time it generated a period value. So it increments it's time
+notion each time it computes a value. It computes based on phase it is in.
+Refers to stored SInfl1 and SInfl2 values (U16) to decide when to advance
+its phase.
+
+RAMP_UP  Add RampInterval to time and compute Step. See if Step >= SInfl1.
+( we will always leave period value alone at inflection when no plateau)
+If plateau, we put period value at 1/VMAX. So we do not update the period
+value. For computing the down ramp, we need to know how long it is.
+Maybe we just leave the TimeValue where it was and count it down.
+float RampTime - Counts up from zero til first inflection point. Stays
+                   the  same during pleateau if any. Counts down to
+                   zero during ramp down. Used to compute steps from inflection
+                   point. In ramp-down that is Infl2, in plateau InFl1.
+                   In Rampup that is
+U16 MoveSteps - total steps in move.
+#define SI StepperIndex
+
+typedef structure
+{
+    float RampTime, Vel
+    U16 Infl1, Infl2;
+    U16 StepCount;
+    U8 FCCount, State;
+    bool AdjFlag;
+    bool Triggered; //true means ISR used last period value and we need to compute a new one, ISR sets it, Ramp() clears it
+    BWUnion Period;
+    U16 TrigStep; //StepCount after which Period  is loaded by ISR
+} STEP_CTRL;
+
+STEP_CTRL StepCtrl[MAX_STEPPERS];
+
+
+//Should be called before move is started
+InitRamp(U16 MoveSteps, U8 SI)
+{
+    float SCrit = (VELMIN * TCRIT) + (ACCEL * TCRIT * TCRIT / 2);
+
+    if(MoveSteps > 2*SCrit)
+    { //have plateau
+        StepCtrl[SI].Infl1 = (U16)SCrit;
+        StepCtrl[SI].Infl2 = MoveSteps - Infl1;
+    }
+    else
+    {
+        StepCtrl[SI].Infl1 = StepCtrl[SI].Infl2 = MoveSteps/2;
+    }
+
+    StepCtrl[SI].TrigStep = MoveSteps;
+    StepCtrl[SI].RampState = RAMP_UP;
+    StepCtrl[SI].RampTime = 0.0;
+    StepCtrl[SI].Triggered = true;
+    Ramp3();
+}
+
+
+void Ramp3()
+{
+    U8 Steps;//# of steps we will take before new period value will be used due to TrigStep
+    float Vel;
+    if(!StepCtrl[SI].Triggered)
+    {
+        return;
+    }
+
+    switch(StepCtrl[SI].RampState])
+    {
+        case RAMP_IDLE:
+        default:
+            break;
+
+        case RAMP_UP:
+            Vel = VELMIN + (ACCEL * StepCtrl[SI].RampTime);//compute Vel based on RampTime
+            Steps = (U8) Vel * RAMP_TIME_INCR;
+            Steps = Steps < 1 ? 1 : Steps; //how many steps in this ramp increment, minimum of 1
+            //We are considering last TrigStep to be our current position for the next calculation
+            if(StepCtrl[SI].TrigStep >= Steps)
+            {
+                StepCtrl[SI].TrigStep -= Steps;//next trigger step
+            }
+            else
+            {
+                StepCtrl[SI].TrigStep = 0;//next trigger step
+            }
+            if(StepCtrl[SI].TrigStep <= StepCtrl[SI].Infl1)
+            {
+                StepCtrl[SI].TrigStep = StepCtrl[SI].Infl1; //make it inflection point if we would exceed that
+                if(StepCtrl[SI].Infl1 == StepCtrl[SI].Infl2)
+                {
+                    StepCtrl[SI].RampState = RAMP_DOWN;
+                    StepCtrl[SI].RampTime = TCRIT;
+                }
+                else
+                {
+                    StepCtrl[SI].RampState = RAMP_LIMIT;
+                }
+            }
+            else
+            {
+                StepCtrl[SI].RampTime += Steps * StepCtrl[SI].Period.I * PER_CNT_INTRV;   //time after this ramp increment is done
+            }
+
+            StepCtrl[SI].Period.I = (U16) ((1/Vel)/PER_CNT_INTRV);
+            break;
+
+        case RAMP_LIMIT:
+            StepCtrl[SI].RampState = RAMP_DOWN;
+            StepCtrl[SI].TrigStep = StepCtrl[SI].Infl2;
+            StepCtrl[SI].RampTime = TCRIT;
+            StepCtrl[SI].Period.I = (U16) ((1/VELMAX)/PER_CNT_INTRV);
+            break;
+
+        case RAMP_DOWN:
+            Vel = VELMIN + (ACCEL * StepCtrl[SI].RampTime);//compute Vel based on RampTime
+            Steps = (U16) Vel * RAMP_TIME_INCR;
+            Steps = Steps < 1 ? 1 : Steps; //how many steps in this ramp increment
+            StepCtrl[SI].TrigStep - Steps;//next trigger step
+            if(Steps > StepCtrl[SI].TrigStep)
+            { //move will end before next ramp adjustment so we are done ramping
+                StepCtrl[SI].RampState = RAMP_IDLE;
+                StepCtrl[SI].TrigStep = 0;
+            }
+            else
+            {
+                StepCtrl[SI].TrigStep -= Steps;//next trigger step
+            }
+            StepCtrl[SI].RampTime -= Steps * StepCtrl[SI].Period.I * PER_CNT_INTRV;   //time after this ramp increment is done
+            StepCtrl[SI].Period.I = (U16) ((1/Vel)/PER_CNT_INTRV);
+            break;
+    }
+    StepCtrl[SI].Triggered = false;
+}

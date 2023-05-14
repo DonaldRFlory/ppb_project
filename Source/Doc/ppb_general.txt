@@ -1,0 +1,42 @@
+So upon getting back to appb_project after working with ESP32 firing system for
+a while, decided to document some of the various functions and capabilities
+since I have done a pile of things on the Arduino platform.
+
+PING-PONG BALL CANNON:------------------------------------------------------
+Looking at ping-pong ball cannons, I see I have cannibalized the Electronic
+Speed Controls which provide 5 Volts for the Arduino and hand-wired adaptor
+boards via BE (battery eliminator) on ESC's. Not even clear to me which
+version of appb_project is used. Clearly I use a switch input to trigger
+the whole thing.  The power is from 3S LIPO providing about 12 volts.
+This is used for solenoid drive in single ball mode.
+It looks like code for this is under Source\ppb .
+
+ppb_step versions are for running steppers for x-y table and tube
+winding fixture. Also for ramping tests with long track.
+
+
+
+GENERAL PLATFORM ADAPTOR BOARD------------------------
+AUX-----
+provides five Aux digital I/O  bits used for fire-switch
+input and 4 solenoid outputs.
+
+PWM/Step
+D6-D12 provide either six PWM outputs for controlling hobby servos
+or 6 control lines for 2 stepper drivers wtih ENA, DIR and STEP.
+
+Looks like another version with just STEP and DIR outputs allowing
+four steppers to be controlled.
+
+
+SENSOR/ANALOG
+A0-A7 pins used for four sensors and four limit switch inputs.
+
+Using two pots on the copper tube winding fixture.
+
+Also had fixture for circular motion (coffee stirrer plate).
+
+
+When using Arduino for stepper drive, I used LM2596 buck regulator
+module to provide 5 Volts. This is provided for on my PC layout of
+adaptor board.(or at least fits in the prototyping area)

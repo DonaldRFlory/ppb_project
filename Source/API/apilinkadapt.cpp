@@ -19,12 +19,8 @@
 #include "Api.h"
 #include "apilinkadapt.h"
 #include "verblock.h"
-#include "dlllink.h"
+//#include "explink.h"
 #include <atlstr.h>
-//#include "masteror.h"
-#include "findhid.h"
-HIDP_CAPS HIDCaps;
-FHID_CTRL FindCtrl;
 
 #define STD_BAUD_RATE 115200
 #define DEF_MAX_RETURN_SIZE 200
@@ -48,6 +44,10 @@ struct _HANDLE_TABLE
 							 };
 
 //Returns index 0-9 if Handle is open, otherwise returns -1
+//However if Handle is NULL, returns of 0-9 to indicate that
+//the returned index in the HandleTable is empty. THis seems
+//screwy as it also sets up CommType from this empty entry???
+//Sets up CommType based on info in HandleTable.
 int GetHandleIndex(API_DEVICE_HANDLE Handle, U8 &CommType)
 {
 	for(int i = 0; i < MAX_HANDLES; ++i)
@@ -64,10 +64,10 @@ int GetHandleIndex(API_DEVICE_HANDLE Handle, U8 &CommType)
 //If successful, queries device and gets actual send and return size limits from device,
 //storing the info along with the handle in the local HandleTable.
 //Not required, but allows for most optimal block transfers.
+//This is called once after device comm channel is opened.
 bool InitDeviceCommunication(HANDLE Handle)
 {
-	U16 Size;
-	LINK_STAT LStat;
+	int Size;
 	LINK_SEL LSel;
 	U8 CommType;
 	int Index = 0;
@@ -93,7 +93,6 @@ bool InitDeviceCommunication(HANDLE Handle)
 	//{
 	//	return false;
 	//}
-	Size = 62;
 	HandleTable[Index].MaxReturnSize = Size;
 	return true;
 }
@@ -119,17 +118,8 @@ static int LinkErrorCount = 0;
 L_STAT LinkTransact(LINK_CTRL &LCtrl)
 {
 	LINK_STAT LStat;
-	if(LCtrl.LSel.CommType == COMM_TYPE_HID)
-	{
-		LStat = StreamHIDTransact(LCtrl);
-		return LStat.Stat;
-	}
-	else if(LCtrl.LSel.CommType == COMM_TYPE_SERIAL)
-	{
-		LStat = SerialTransact(LCtrl);
-		return LStat.Stat;
-	}
-	return LE_BAD_CHAN; //sort of but not exactly
+	LStat = SerialTransact(LCtrl);
+	return LStat.Stat;
 }
 
 
@@ -152,7 +142,7 @@ bool ValidateLinkSel(LINK_SEL &LSel)
 		LSel.ReadSize = 65;
 		LSel.WriteSize = 65;
 	}
-	LSel.ChannelIndex = Index;
+    LSel.ChannelIndex = Index;
 	return true;
 }
 
@@ -206,47 +196,6 @@ U32 GetMaxLinkSendSize(LINK_SEL LSel)
 	return HandleTable[LSel.ChannelIndex].MaxSendSize;
 }
 
-int CountHIDDevices(U16 VID, U16 PID)
-{
-	HANDLE Handle = NULL;
-	InitFindHIDCtrl(FindCtrl);
-	FindCtrl.VID = VID;
-	FindCtrl.PID = PID;
-	FindCtrl.Enumerate = true;
-	FindHID(FindCtrl, HIDCaps, Handle);
-	return FindCtrl.Count;
-}
-
-bool ConnectToUSB(HANDLE & Handle, U16 VID, U16 PID, U8 Index)
-{
-	FHID_CTRL FindCtrl;
-	U8 CommType;
-	int HandleIndex;
-
-	HandleIndex = GetHandleIndex(NULL, CommType);
-	if((HandleIndex < 0) || (HandleIndex >= MAX_HANDLES))
-	{
-		return false; //no room for another open handle
-	}
-	InitFindHIDCtrl(FindCtrl);
-	FindCtrl.VID = VID;
-	FindCtrl.PID = PID;
-	FindCtrl.Nth = Index;
-	if(FindHID(FindCtrl, HIDCaps, Handle))
-	{
-		HandleTable[HandleIndex].Handle = Handle;
-		HandleTable[HandleIndex].MaxReturnSize = DEF_MAX_RETURN_SIZE;
-		HandleTable[HandleIndex].MaxSendSize = DEF_MAX_SEND_SIZE;
-		HandleTable[HandleIndex].IsHID = true;
-		if(InitDeviceCommunication(Handle)) //query device for actual size limits
-		{
-			return true;
-		}
-		CloseAPIHandle(Handle);
-		return false;
-	}
-	return false;
-}
 
 //Following are default values for read and write timeout for
 //serial communication from host:

@@ -1,0 +1,112 @@
+NOTE:
+The Arduino Nano schematic by Gravitech (gravitec.us)(GV) lists
+the pins as J1-1 thru J1.15 and J2-1 thru J1.15. I initially
+used a 32 pin Wide DIP (WD)connector which produced two phantom pins:
+
+GV         WD
+J1-1       1
+J1-2       2
+J1-3       3
+J1-4       4
+J1-5       5
+J1-6       6
+J1-7       7
+J1-8       8
+J1-9       9
+J1-10      10
+J1-11      11
+J1-12      12
+J1-13      13
+J1-14      14
+J1-15      15
+J1-16*     16           Phantom pin
+
+GV         WD
+J2-1       32
+J2-2       31
+J2-3       30
+J2-4       29
+J2-5       28
+J2-6       27
+J2-7       26
+J2-8       25
+J2-9       24
+J2-10      23
+J2-11      22
+J2-12      21
+J2-13      20
+J2-14      19
+J2-15      18
+J2-16*     17     Phantom pin
+
+------------------------------------------------------------------
+Desig.     WD             AT Mega 328  This looked correct on 6/22/2-21
+------------------------------------------------------------------
+D1/TX       1     J1-1     31 D1
+D0/RX       2     J1-2     30 D0
+RST         3     J1-3     29 C6
+GND         4     J1-4     21,3,5
+D2          5     J1-5     32 D2                Aux1  Fire Switch
+D3          6     J1-6     1  D3                Aux2  Sol4
+D4          7     J1-7     2  D4                Aux3  Sol3
+D5          8     J1-8     9  D5                Aux4  Sol2        Stp4Step
+D6          9     J1-9     10 D6                Aux5  Sol1        Stp4Dir
+D7          10    J1-10    11 D7                PWM6  Stp2Step
+D8          11    J1-11    12 B0                PWM5  Stp2Dir
+D9          12    J1-12    13 B1                PWM4  Stp2Ena      Stp3Step
+D10         13    J1-13    14 B2                PWM3  Stp1Step
+D11         14    J1-14    15 B3 MOSI           PWM2  Stp1Dir
+D12         15    J1-15    16 B4 MISO           PWM1  Stp1Ena      Stp3Dir
+NC          16        -
+NC          17        -
+D13         18    J2-15    17 B5/SCLK/TELL_TALE/LED B6?
+3V3         19    J2-14    --FT232-17
+AREF        20    J2-13    20
+A0          21    J2-12    23 C0                Sensor1
+A1          22    J2-11    24 C1                Sensor2
+A2          23    J2-10    25 C2                Limit 1 or Analog In
+A3          24    J2-9     26 C3                Limit 2 or Analog In
+A4          25    J2-8     27 C4                Limit 3 or Analog In
+A5          26    J2-7     28 C5                Limit 4 or Analog In
+A6          27    J2-6     19 Note 1            Sensor3
+A7          28    J2-5     22 Note 1            Sensor4
++5V         29    J2-6     4, 6
+RST         30    J2-3     29 PC6 (dup)
+GND         31    J2-2     21,3,5 (dup)
+VIN         32    J2-1     LM117-3
+
+on ATMEGA318, pins 7 and 8 are crystal pins B6 and B7.
+NOTE 1: on Arduino nano, A6 and A7 can only be used for analog, not digital I/O
+A0 - A5 are numbered 14-19 (PC0-PC5) in arduino convention
+------------------------------------------------------------------
+------------------------------------------------------------------
+First stepper drive board stepper pinout:
+S1 and S2 connector
+1   +5V
+2   S1Ena        No longer connectedd
+3   S1Dir
+4   S1Step
+5   S2Ena        No longer connected
+7   S2Dir
+8   S2Step
+9
+
+
+S3 and S4 connectors
+1   +5V
+2   Dir
+3   Step
+
+
+
+
+
+
+
+
+
+
+
+
+
+

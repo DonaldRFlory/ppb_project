@@ -1,0 +1,103 @@
+So thinking of implementing a simple scripting language for PPBall platform.
+Idea would be to have a few adhoc defined commands like
+ServPos PosValue
+Delay DelayMsec
+
+It would read in the lines and execute them until end of file
+or until we pressed the Pause or Cancel button.
+I would have a list of names and would call functions. Seems a little complex to
+learn to read file in C# and parse due to Unicode issues. Rather work in ASCII
+for script files.
+
+Seems like my conversion of menu utility uses some of needed techniques.
+I put menu functions into dictionary so that I can call any of them.
+I read in the menu file as text and parse it into codes and names of functions
+for initing the menus, then get the activator character and look up the function and call it, converting
+or passing from 0 to 4 parameters. All of the menu functions are called by way of delegates which
+I auto generate from linklists.
+
+All the menu delegates are added to TheMenu.DelDict with Add(DelegateNuame, Delegate)
+I have a MenuDict with menu pages keyed by string which is the unique menu name.
+I have a DelDict which is MenuDelegate functions keyed by string name.
+Have Params array which I presumably read
+I read the menu def file line by line using file.ReadLine
+Use handy string.split function to parse parameters on line into words. It sorts
+out the MDEF or FDEF, the selection char, and leaves me with a filled in array of strings.
+char[] DelimChars = {'\'',',', '(', ')', '\t', '"'};
+so I delimit on following: ',()\t"
+I lookd at first word to see if it is MBEGIN or FITEM or MEND and then
+check how many words in array to see if it has correct or min number of words which
+is ==3 for MBEGIN, ==1 for MEND, min of 5 for FITEM.
+For FITEM I don't complains about too many but take up to four values after the required
+5 to init the 4 ValPrompt . Un supplied ones are set to "".
+
+
+So thinking that I will set up menudelegates for all the script functions first.
+
+MenuItem -
+So... thinking maybe I handle script commands just like FItems including asking for parameters
+from user if a prompt rather than a number is in one of the four possible parameters
+of the script command. That way I could set up a repeat count for the whole script.
+I may have some script commands that set global functions. Could also implement loop using a FIFO stack and
+storing the script index of start of loop.
+
+If we are in a loop, then we have something on FIFO stack, that is the start of loop.
+If we require loops to not overlap, that is be contained wholely in outer loop, we
+simply need to make sure a loopback does not go to index before the loop start stored on the FIFO stack.
+Best if we found this out while reading in the script file. We do not know about a loop until we process
+a loop count. Maybe we use an Reiterate command with minimum being 0, or an Iterate with minimum being 1.
+I do not expect we are looping on variable, but not completely out of the question.
+We could easily create variables. Maybe in future we make variables start with a $ sign to distinguish
+them from literal values.  Anyway, I think we will store the arguments of script commands as strings
+and interpret them at run time as the script executes. When reading in the script file, we will
+make sure that the script command actually exists. The Loop command would then only check it's parameters
+at run time (and conceivably get parameter value from user.
+
+Thinking I might have a wait for input command so we could wait until user pressed a key. Or maybe it would
+just be a pause key. Do not think loops want to allow user to enter the loop index at run time but
+I could certainly avoid this by convention. Not clear how letting loop count be entered would work. It
+would have to only work the first time we hit the Loop command. We could keep a stack of last Loop command
+index and where it looped to. Then when we hit another loop command, we would require that it looped to
+index no greater than where the previous loop command looped to, or to after the last loop command index,
+so it either enclosed the previous loop or looped in a region completely after it.
+
+I think that when we encounter a Loop command, we look where it loops to which must be backwards. Then we
+check the point it loops to. That point must not be marked as in-a-loop. Then we mark all the points beyond the
+loop beginning and up to and including the Loop instruction as in-a-loop. The first Loop command encountered
+grabs it's range, marking it all. Then the next Loop command grabs its range marking it all. From then on
+no Loop commands encountered can have a loop destination which is marked. This would ensure that loops are
+properly nested. Then we need to handle nesting. So we need to keep track of currently active endpoint. It remains
+active until it counts down to zero.
+So if we hit a Loop command whose loopback point is not marked as inaloop, we push its count on stack, and mark
+all its range as inaloop. We jump back to its start and decrement it's count. When CurCount of active loop is zero
+we go on. When we hit a Loop command with nothing on stack, we know we are starting this loop and push it on stack.
+When we finish it, we pop it from stack. Then when we hit the Loop command of enclosing loop, we know we are strting
+it and push it onto stack. Then we loop back. When we hit the Loop command of enclosed loop, we see something on
+stack. We need to know if it is itself or the enclosing loop. It recognizes it's own end index and compares it
+to endindex on stack. If different, it pushs itself onto stack (just like it did the first time).
+So the rule is, if stack is empty, we are starting loop (first loopback). If stack is not empty, if it is us, we
+are counting, if it is not us, we are starting count and push ourselves onto stack.
+
+We do not allow gotos, at least not into a loop
+We should allow labels of locations to make loops easier.
+Could still loop by index if we want, can certainly distinguish between a number and an alpha string in Loop
+command.
+Seems we will want variables pretty quick and conditionals if we really get into this script
+thing.
+
+So it seems like my script functions will work just like Menu functions.
+I will script functions as function calls with parameters in parentheses. This
+will make obvious the separation of parameters by commas.
+Seems there will be a
+ Delay(Milliseconds)
+function.
+
+SetServoUsec( ServoIndex,  USecs)
+LoopStart(ServoSetLoop)  //
+0: SetServoUsec(1, 2000)
+1: Delay(100)
+2: SetServoUsec(1, 1500)
+3: Loop(ServoSetLoop, 10)  //10 is total iterations, 0 or 1 are do nothing
+4: Delay(100)
+5: SetServoUsec(0, 1500);
+6: Loop(ServoSetLoop,2)
