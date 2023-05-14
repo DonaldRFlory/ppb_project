@@ -1,0 +1,288 @@
+Notes on stepper control for helix winder. Using ST-M5045 drivers along with
+the PPB Controller board. The PPB Controller will produce step pulses for up
+to two steppers.
+
+Using A0, A1, A6, A7 as analog inputs (only possible use for A6, A7)
+Using A2, A3, A4, A5 as digital inputs for limit detectors
+
+So we have StepperMove() command with a step count up to 65535.
+65535 will be infinite move. IF we send a new move while moving,
+it replaces the count of any currently active move. A move of zero will
+stop an existing move.
+
+
+------------------------------------------------------------------------
+Interested in how fast I can step with Arduino. The timer0 prescaler gives us
+4USec per pulse on the 256 count free running count which generates a Msec
+count each time it overflows. By setting compare register and handling
+compare interrupt, I can generate interrupts with 4 USec precision.
+I can leave step pulses active for longer than 10 Msec if needed, but not
+clear how long they need to inactive between pulses. Maybe if I have two
+steppers, I can use alternate interrupts to process each one. This way
+I can always reset one steppers pulse when processing the other, without
+even checking if it was active. So processing of count and divide on any
+one interrupt is for one of two steppers only. In this scheme,
+I need at least three interrupts to generate a 12 msec pulse.  It seems
+like I will need a bit of time for calculation of whether a step is to occur,
+and this might be enough time for stepper pulse to be gone before the next
+which might possibly occur.
+
+We can handle free running stepper by monitoring count in background and
+reloading it if it gets too low. We can then reload it, probably without
+even disabling interrupts, since exact value we load does not really matter.
+
+Setting will control speed from zero to some maximum value in both directions
+with center setting off. Not interest in speeds below about ten Hz which is
+100 msec per step. Out timing scale is in units of 4 USec. 250 counts is 1 msec
+so 25000 counts is 100 msec. We could sensibly limit to 65535 counts, the maximum
+supported by our firmware design.
+Thinking of 10% of range being dead zone or 512 counts +/- 50.
+So for A/D in range 462 - 562 we are off. Less than 462 is false direction
+>562 is true direction. Thinking of trying speeds up to 20K steps/sec. This
+is 50 USec or 12.5 counts. We do not account for the 12USec step pulse so
+we will time down to 38 USec or 9.5 counts. So we limit our period to 9 counts.
+Period range is thus 9 - 65535. Steps/sec is about .2 through 20000
+So we compute period in float. with ends of pot the fastest.
+
+461 counts from dead-zoned amounts to 20000 hz. Each count is thus 46 Hz if linear.
+This will not let us reach very low rates with any precision. Seems like we
+want a log scale. 1-10, 10-100, 100-1000, 1000-10000
+--------------------------
+So we will have the count of 4 MSec interrupts in one byte variable.
+There will we in OCRA interrupt once every millisecond. Not real important when
+it occurs in the time cycle which is 976.5625 HZ or 1024 USec long.
+Each time interrupt occurs, which is a minimum of 1024 USec interval, we see
+if a step is required based on total count of 4 USec intervals.
+If we are timing a greater than or equal to 1024 millisecond interval, we
+decrement the 1 msec count each interrupt. When we have less than a millisecond
+to time, that is when the msec byte counter is zero, we load the match register
+with the number of remaining 4 USec periods. When both are zero we take a step
+and set count to zero.
+
+So what happens if we are not stepping and decide to start stepping with a step rate
+of less than 1 msec? Whenever the next interrupt occurs,
+
+So if we get interrupt, and msec count is zero, we take the step. Whatever the counter value
+was at interrupt, that is, whatever compare value is, is the base for next step.
+If the millisecond portion of interval is zero, we add the 4 USec portion (the low byte)
+to the compare value. If the 4 USec part is zero, this makes interrupt happen in one msec.
+We will not let the 4Usec part get less than about 16 counts unless the timer cycle count
+is greater than zero.
+
+So, when not stepping, we get interrupts every msec. When we see that we are stepping, we
+count timing. When not stepping, might as well reset current step timer each time.
+As soon as a step count is loaded, (period word is already loaded) we notice that we are stepping
+on next interrupt. If CurPeriod is => PeriodValue, it is time to take a step.
+For first step, the CurPeriod will be zero cause we have been clearing it
+while stepcount is zero. We take the step, then we check to see if PeriodValue is >= 256. If so
+we leave the compare register alone and set CurPeriod to 256 to account for the next
+interrupt interval which will be 256 * 4 USec.
+
+I am thinking that maybe we subtract 256 from period counter each time we get interrupt
+if the period count is greater than 256. If the period counter is less than 256, we
+can reset it, since presumably, the  last interval was less than 1 msec.
+
+We will time the step pulse at 3 ticks. The period will be at least 8 ticks.
+So we have step flag set and Match incremented by three. Then next interrupt is in
+12 microseconds. We clear the step pulse and then need to set up delay for next step.
+This will be Period - 3
+
+1) Step count is set, Period Counter = 0.
+2) Interrupt occurs.
+3) We see step count so we know we are active.
+4) If Period Counter is zero, we know it is first step and we set the step
+    pulse and set the step flag. We set the PeriodCounter to 3 and add three
+    to the compare register.
+5) We get next interrupt. If PeriodCounter != 0 we know it is either time
+   for next step or time to clear step pulse. Thinking we clear step pulse whenever
+   not taking a step. Simpler still, we clear step pulse whenever we  get an interrupt.
+   So if PeriodCounter <= Period, have just finished
+   athe
+   first step. Actually, at any interrupt where
+
+
+4) If Period Counter is zero, we set the step pulse and set PeriodCounter to
+    Period - 3.  And count down the step count. Otherwise if PeriodCounter >= 256, we subtract 256 from it
+    and return. If < 256, we add PeriodCounter to match register. (setting
+    up last shorter interrupt cycle) and clear PeriodCounter.IfWe set the PeriodCounter to 3 and add three
+    to the compare register.
+
+So we take steps when StepCount is non-zero and PeriodCounter is zero. Each time we take a step we
+set PeriodCounter to Period - 3 and increment match count by 3.
+
+Each interrupt, look at period count. If it is >= 256, we decrement by 256 and return. If it is less
+than 256 and >0  we clear it we subtract 256 from period count if it is greater than or equal to 256,
+typedef union
+{
+    U16 I;
+    U8 B[2];
+}BWUnion;
+
+//The Period values will always be 3 counts less than desired (in 4Usec counts) to account for 12 USec step pulse
+bool S1Step;
+BWUnion S1Period, S2Period, S2PeriodCount, S1PeriodCount;
+
+if(S1Step)
+{
+    S1Step = false;
+    --S1Count;
+    digitalWrite(STEPPER1_STEP, HIGH); //inactive
+    //We just timed step pulse so now we time the sub-cycle portion
+    OCR0A += S1PeriodCount.B[0]; //so we time fractional part or whole cycle if fractional part is zero
+    S1PeriodCount.B[0] = 0; //and we account for the fractional part
+    return;
+}
+if(S1Count) //if we are stepping
+{
+    if(S1PeriodCount.B[1] == 0)
+    { //no full timer cycles left (1024 USec)
+        if(S1PeriodCount.B[0] == 0)//time to take a step
+        {
+            digitalWrite(STEPPER1_STEP, LOW); //activate step pulse
+            S1Step = true;
+            S1PeriodCount.I = S1Period.I;
+            OCR0A += 3;//to time step pulse
+        }
+    }
+    else
+    { //at least one full cycle needs to be timed, no change to OCR0A
+        --S1PeriodCount.B[1];
+    }
+}
+
+
+We start a pulse when we are not doing anything else and there is a S1Count.
+
+If timing a step pulse, finish the pulse and start timing it. When we start timing it,
+we load the PeriodCount union to a non-zero value.
+
+IDLE means zero in PeriodCount and not in a step pulse. At this point we check
+SCnt. If it is non-zero, we may initiate a step sequence. We do this by setting the step pulse.
+ANd loading period counter.
+THis set step flag and sets timing for interrupt in 12 USec. When we get this interrupt,
+we see the Step flag and know we just did a step. We clear the step flag and set timing
+for either short or long. If we see a long count we decrement it and return. If not, we
+check short count and if non-zero we start its timing. we clear the short count.
+
+
+Seems no way to tell we just finished last timing to tell us to decrement
+the step count. We would like to decrement the step count at this point and
+check for a new step.
+
+If we make SCnt the indicator of IDLE, we need to count step after taking and
+timing it. We also need status to indicate we have started processing a step
+and the sequence of taking and timing it. This can use two bytes of PeriodCount.
+We need to know when step pulse is active.
+When we come in with interrupt and finish a step and decrement step count
+we have extra processing to then check again and start a new step. Still, if we
+want next step to start right away, we have to look at SCnt immediately after
+decrementing it.
+
+So maybe we count before end of step sequence and use coeexistance of Idle
+state var and zero count to know stepping is complete. So we count
+SCnt whenver we like, preferably when we start taking the step.
+
+So when we come in to ISR, if State == 0, there is nothing to do except look
+at StepCnt. If State != 0 we are busy. Then we need to see :
+1) If we are producing step pulse
+2) If we need to
+
+When we are producing step pulse, we terminate it and go to next phase.
+The next phase is either short or long delay. If it is a long delay,
+this is indicated by long delay count and we decrement it.
+
+After a delay, we do not really care which it was. We just see if there
+is a value in either short or long delay bytes and if none we are done.
+
+
+
+So.. long term, how do I want to control steppers vis a vis link control or potentiometer control?
+
+Now I always monitor pots, and if in active range, the pots take control. The link
+can take control by sending command. One cannot really command a step unless pots are parked,
+as they immediately takeover if in active region (within a few milliseconds, not letting link
+move complete).
+
+So maybe I make link control sticky and require it to be cancelled over link before
+reverting to pots. For use as fixture, want it to come up in pot mode. Maybe will use
+switch input to control pot enable at startup. IF switch is closed at startup, go to fixture
+mode (pots enabled).
+
+When we enter Step2LinkControl, we set SteppersInterlocked to false.
+It might be nice to be able to test interlocked mode over link. As long as
+we only called SetStep() on stepper 1, it would work in intelocked if interlocked
+was set. We do have a SetSlaveParameter(SPAR_STEPPERS_INTERLOCKED) to control this
+already.
+
+So am thinking that we have a winder mode which works like it does now, controlled by pots.
+When S2 is in inactive region (centered), the steppers work in interlocked mode.
+If S2 enters active region, they become independent, but they return to interlocked as soon
+as S2 goes inactive. This allows resetting position of S2, even if S1 is active, but the interlock
+takes over as soon as we park S2 knob. To get to link control on either, we just send command.
+If we send command to S2, it stays in link control mode until reset somehow. Not clear how we
+restore stepper control mode. Am thinking that it enters pot control mode on power up if switch
+is depressed. Once we get into link control mode, I think we get out by either cycling power with
+switch depressed, or we send a link command to do it explicitly.
+
+
+So.. I want the limit switches to limit motion of S2. For now I just want to run a test program to move it around.
+When I hit limit I want to stop.
+
+
+
+Planning to implement a continuous movement cycle on S2.  It will move from end to end with
+a stepwise ramped move profile. I will implement a ramped move which accelerates up to a maximum speed
+and decelerates at end. At the start of the move, I will look at the total move and decide set up a ramp table
+for the whole move. I will use a basic accel/decel table with each entry being a structure with step-count at which
+it takes over and the PeriodValue which applies during it.  The table will have a first entry which is pull-in period
+and the number of steps to be taken at this initial value. The next entry will have a shorter period and will have the
+step count at which we advance to the next (shorter) period. The final entry have the minimum period and a step count
+which is not actually used. This last entry is period used during constant vel portion in middle of trapezoidal
+move.
+
+The table used during a move is a mirroring of the acceleration table to reflect the actual full move.
+
+
+As a random example
+Index    Step-Count  Dwell Period
+0         5           5     2000
+1         20          15    1500
+2         60          40    1000
+3         120         60    750
+4         300         180   500
+5         600         300   400
+6         900         300
+7         2000        100
+We have eight entries in the table.
+We should remain at each
+
+Thinking maybe we forget the table and just compute the speed based on a start rate, acceleration, and max rate.
+We calculate the velocity based on time since start of move. Thinking of updating at maybe every 50 msec (20 Hz)
+
+
+
+----------------------------------------------------------------------------------
+So when we start a move we do some planning. The move is STot. We have previously computed SCrit, and have values for Vmax, VStart, and Accel.
+We set VCur to VStart and Steps to STot. We start the move and set state to RampUp and immediately calculate the Steps we expect after Titv.
+We take the VCur and compute steps taken during TInterv. S = VStart*Titv + (Titv*Titv*A/2). We then compute next velocity and next period to load.The nest
+velocity is simply VCur + A*Titv. If next vel > Vmax, we advance to Plateau state and limit next vel.
+
+So before we start a move, we compute whether there will be a plateau phase. If not, we know we will start rampdown at a specific stepcount, that is 1/2 of
+the total move. We are always looking at stepcount to decide whether to do something. What we do has already been decided. During ramping these target stepcounts
+will be separated by Titv. When we do the computation, we
+
+The rampdown step count will be the move length over two for sub critical moves. For supracritical moves it will be SCrit.
+So we have two stepcounts stored. The first is first inflection point. The second will be zero for sub-critical moves.
+When we hit the first stepcount (always in rampup phase), we look at second one. If it is zero, we advance to rampdown, and
+if non-zero we advance to plateau phase.
+
+When computing the next Velocity to load, we end up with an SNext which is the stepcount which triggers the next load of period. We then can compare this
+to the two inflection stepcounts to see if we need to change state. If we are ramping up and SNext was beyond the next critical step, we use the higher stepsleft value
+and keep the period the same.
+float VCur;
+U16 PNext, SNext;
+U8 NextState; //  0 = idle, 1 = RampUp, 2 = Plateau, 3 = RampDown
+
+
+We are always watching SNext to trigger next action. The action is always to load the PNext value into period.
+After the load, we do the next computation.

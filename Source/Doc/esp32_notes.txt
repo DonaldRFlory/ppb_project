@@ -1,0 +1,51 @@
+Notes on ESP32 Arduino operation---------------
+
+Measured duration of analogRead(36) with telltale and got about 9.4 USec.
+client.stop() call took .8325 msec in WiFiClient
+
+Looks like my test SPI send in web page    service loop takes 71.65 USec to send 56 bits,
+the first time, then 21.52 Usec the next eight times. In the long one, most of time is spent
+before we see activity on spi. Looks like all the extra 50 or so USec.
+My println of received data takes 181 USec. the first time and 29.3 Usec on subsequent two.
+Later telltales showed as much as 1.8 msec for:
+      sprintf(StringBuff, "%d, %d, %d, %d, %d, %d, %d \n",SPIDataRcv[0], SPIDataRcv[1], SPIDataRcv[2], SPIDataRcv[3], SPIDataRcv[4], SPIDataRcv[5], SPIDataRcv[6]);
+      Serial.print(StringBuff);
+
+ Pulled the Serial.print() out of telltale timing and found it was what took most time.
+ The sprintf() took 164.5 Usec the first time and 20.45 Sec after the first one.
+
+ Bracketed:
+    // Display current state, and ON/OFF buttons for GPIO 26
+           client.println("<p>GPIO 26 - State " + output26State + "</p>");
+           // If the output26State is off, it displays the ON button
+           if (output26State=="off") {
+             client.println("<p><a href=\"/26/on\"><button class=\"button\">ON</button></a></p>");
+           } else {
+             client.println("<p><a href=\"/26/off\"><button class=\"button button2\">OFF</button></a></p>");
+           }
+
+ With telltale and it took 1.956 Milliseconds.
+Then made only one call to println by setting up full string to print. This
+    digitalWrite(ADC_TELL_TALE, HIGH);
+    // Display current state, and ON/OFF buttons for GPIO 26
+    // If the output26State is off, it displays the ON button
+    //client.println("<p>GPIO 26 - State " + output26State + "</p>");
+    // If the output26State is off, it displays the ON button
+    if (output26State=="off")
+    {
+    client.println("<p>GPIO 26 - State " + output26State + "</p>\r\n<p><a href=\"/26/on\"><button class=\"button\">ON</button></a></p>");
+    } else {
+    client.println("<p>GPIO 26 - State " + output26State + "</p>/r/n<p><a href=\"/26/off\"><button class=\"button button2\">OFF</button></a></p>");
+    }
+    digitalWrite(ADC_TELL_TALE, LOW);
+time it took 1.071 msec., just a bit over half as long.
+
+
+Not sure what use I have for MISO except to check whether the power board is there or not.
+To use it, I need to shift twice. THe first time I get stale data while new data is loaded.
+Then I strobe the new data to output, and do another full shift, loading in zeros to shift
+register, and shifting out the data I just output to verify it. After an appropriate delay,
+I strobe again to load the zeros to the output register.
+
+
+F=

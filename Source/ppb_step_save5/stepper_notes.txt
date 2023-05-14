@@ -1,0 +1,218 @@
+On control board for tube winding fixture, I connected
+Sense 3 and Sense 4 inputs to Analog inputs 6 and 7 on Arduino Nano.
+These are only useable for analog. This frees Analog inputs
+A2 and A3 to be used for digital I/O, notably limit sensors.
+I also connected pads at A4 and A5 to use these as digital I/O.
+So Sense inputs 1-4 are A0, A1, A6, and A7
+
+I support 4 limit switches, LIMIT_1 thru LIMIT_4, connected to
+A2, A3, A4 and A5 Arduino pins.
+
+I am monitoring all four limits in loop(), but only enforcing
+limits for Stepper 2, and strangely, LIMIT1 and LIMIT3 for top
+and bottom limits.
+
+Stepper 3 step is SERVO4_PIN (PWM4)
+Stepper 3 direction is SERVO1_PIN (PWM1)
+
+Stepper 1 step is SERVO3_PIN       (PWM3)
+Stepper 1 direction is SERVO2_PIN  (PWM2)
+
+
+Stepper 2 step is SERVO6_PIN       (PWM6)
+Stepper 2 direction is SERVO5_PIN  (PWM5)
+
+Stepper 4 step is AUX4
+Stepper 4 dir is AUX5
+
+
+---------------------------------------------------
+So I have done several different projects for PPBStep
+1) Four steppers (potentially with ramped moves) controllable over link.
+
+2) Coffee stirrer rotating platform
+    This uses Timer2 to generate steps for X and Y axes.
+    Uses compare interrupt A  only of timer 2.
+    Compare B is only used for indepent use of stepper 4.
+    Uses StepCtrl[2](normally for stepper 3).
+    Uses Stepper3 and Stepper4 control lines.
+    Uses Solenoid4 (AUX2) output signal to show which segment control
+    set is in use for debugging with Logic Analyzer.
+    The Timer2 OCR2 ISR calls a separate function RotISR()
+    when in rotation mode to do the stepping and manage segments.
+
+    During rotation operation, RotServe() is called frequently in
+    background loop to check status of the two rotation segment control
+    structures. These are ping-pong control structure, that is, one is
+    being filled while other is active controlling stepping by ISR.
+    Basically, I do "Circular" moves by computing line segments in background
+    to piecewise approximate a circle. Based on setup parameters, (radius, speed etc)
+    I compute line segments. Each segment has a fractional step increment for X and Y
+    and a direction for X and Y. At each interrupt, ISR adds increment for X and Y to
+    accumulators, and if a step has been accumulated, it is commanded by setting
+    appropriate step pulse. The increment is always less than a step so only
+    one step can occur a t most for each axis per interrupt.
+
+---------------------------------------------------
+Note on stepper timing:
+Timers use 4 USec clock divided from processor clock of 16 MegaHertz.
+The full count of 8 bit timers is 256 giving about a 1 msec period.
+(actually 1024 Usec or 1.024 milliseconds).
+The two OCRs (output compare registers) on each timer allow generating shorter
+periods of count. Since it takes some time to service interrupts, there is a
+minimum practical interval between interrupts maybe around 25 USec or 6 counts
+of timer. At any rate, I don't try to go faster than about 30 KHz or about 6
+count increments.
+ To generate longer intervals for stepper, I have a full period count plus
+ a timer increment count for a full 16 bit value to control step period.
+ This gives 65535 count maximum interal or about .26214 sec for a min freq.
+ of about 4 steps per second. The problem is, that for steps rates lower
+ than 1 KHz corresponding to periods longer than 1 msec, the residual count
+ after timing the full timer count intervals may be two short, causing us
+ to still be in ISR processing last full timer count when the final
+ interrupt occurs and we would miss it. So... To fix this problem, if final
+ timing cycle is two short for a given period, I make the first interrupt
+ cycle be half a full timer count or 128 counts, instead of 256. I count
+ it as a full timer count, then when doing the last interrupt cycle which is
+ then to short, I add the 128 counts to it, making it a safe length.
+
+ Actually, we handle it kind of the reverse of above. We look at full period
+ at start of move, and if it is greater than one full counter cycle, we
+ see how many full counter cycles we need and what the residual count is.
+ Then if residual count is too short, we add 128 to it and set an Adjust
+ flag. We then time the adjusted residual time for the first ISR cycle.
+ Then we time the full count cycles making the last full count cycle a 128
+ count cycle rather than a full count cycle.
+ ---------------------------------------------------
+Ramping is handled by a background function. This is mainly so that floating
+point calculations are not done in ISR context. Though done via Arduino
+loop() function, it is called based on msec tick flags so it is called
+every millisecond. It is also passed an index, and processes 4 steppers
+in round robin fashion so that one stepper is processed on each call
+and each stepper experiences a four millisecond interval between ramp
+processing calls.
+
+
+------------------------------------
+In a stepper ISR Busy means that we are actively timing a step, and we have
+already generated the step pulse for the step. If not Busy, each interrupt
+we look at StepCount, and if it is non-zero we produce a step pulse and
+set up FullCounts and possible AdjustFlag. We then add the Period residual
+to OCR to set up counts to next interrupt, and if AdjustFlag was set
+increase it by 128 to make it longer than minimum interval. However, before
+setting up interval, we check to see if ramping has set NewPeriod flag and
+if so we load Period union with the NewPeriod value which was setup by
+ramping function.
+After final step, when StepCount is checked, it is zero, and ISR disables
+the OCR interrupt.
+
+--------------------------------------------------
+New circle move generation:
+New idea is to generate a segmented cirle move in background, generating
+a new position every 5 msec. The ISR will be in a kind of tracking mode.
+ISRs will have XPos and YPos signed integers for actual position in steps.
+The position generator will have XCMd and YCmd signed integers and speed
+variables XVel and YVel for the current segment.
+
+Each ISR will have job of keeping its' position variable equal to the cmd
+var by taking a step in the appropriate direction to zero the error each
+interrupt.
+
+The position generator, each time it calculates a new position, will
+see how far from desired new position each axis is, and compute a desired
+speed for the axis. Ideally this would allow starting with the axis at any
+location relative to the driving circle location.
+
+THe position generator will also manage acceleration and deceleration and
+keep track of how fast each axis is moving. During each 5 msec segment, the
+ISR will move at a constant velocity in a direction which will reduce the error.
+The commanded position will stay constant for five millisecond intervals.
+
+So we have XCmdVel, YCmdVel, computed from the move generator. We should
+accelerate the radial velocity at startup assuming at 0 or 90 degree position
+giving X or Y the same velocity. If at 45 degrees, it will be going slower than
+necessary. The rate of command rotation will peak at max rate of X and Y
+(assumed to be equal). So X and Y velocities are constantly changing and
+have to be within range of physical capabilities of steppers.
+
+So at startup, we will do constant acceleration up to vmax for circle trajectory.
+We have then a startup and a shutdown state and a run state for generator.
+We also have the current velocity of each axis.
+
+Clearly we want the new segment endpoints to be posted as new command
+values and a flag set so ISR notes the change at next interrupt and
+updates its ISR delay and possibly, direction at next interrupt.
+
+Now seems like a fast interrupt and adding fractional step increments is
+the way to go in tracking mode. The ISR then is always adding the position
+increment computed from speed of axis for segment. Latency to see new
+segments will be constant. When ISR accumulates a full step it takes it.
+
+Since ISR can see segment endpoint and current position, it will know which
+way to step which will always be in direction of last posted segment endpoint.
+If it is at endpoint, it will take no step.
+
+So we have a step increment, and an accumulator for each stepper. The step
+incremnt is inverse of velocity (abs). So we are generating steps at some
+rate, and each time it is time for a step, we look at pos error to determine
+direction of the step.
+
+one issue is time to compute postitions may be variable. We can precompute
+command positions and load them at exact times based on ISR.
+So they could update at exact 5 msec intervals. Completion of steps will
+not necessarily line up with 5 msec intervals.
+
+
+Busy in StepCtrl means stepper has commanded a step and is timing it.
+StepCtrl.StepCount if non-zero means there are still steps to take.
+ISR interrupt is masked off when not stepping so it we finish timing a step,
+and see that StepCount is zero (in ISR) we mask off the interrupt.
+
+
+Now for my new idea for circle move involving background process generating
+line segments and posting them to X and Y ISRs, I wanted to have each axis ISR
+wait when in saw the new segment flag, until it saw that other axis was  done
+with it's move before starting the new segment. This would be to keep axies sychronized
+in case one finished a bit before other due to quantization of desired step speeds
+by timer clock. When an axis is taking a number of steps, we time each step for
+an integral number of 4USec timer clocks and the total move time is thus the
+desired time for the move. If we are taking 20 steps, then the increment
+possible for total move time is 80 USec. Lets assume rotation rate is constant
+and we have a fixed number of segments that evenly divide one revolution, probably
+ten or more. Then all segments will take the same amount of time. As slope of
+segments changes the relative numbers of steps by the two axies will vary
+from say at angle 0, no steps in X and for example 40 in X. At 45 degrees,
+each axis will have equal steps and at 90, X will take all the steps.
+Thinking I could fudge the speed of one or the other to keep them in synch via the
+planner/segment-generator.
+
+MIN_STEP_PERIOD is ten for 40 microseconds. This gives max rate of 25 KHz.
+
+Currently, I compute step interval for ramping every 4 milliseconds for an active
+stepper. The speed stays constant for the 4 msec interval.
+Thinking of changing implementation of ramping. In new idea, I precompute segments
+of a certain number of steps, during which velocity is constant. These segments
+should last 4 msec.
+
+It seems that sometimes the first move segement of a ramped move might sometimes
+be zero steps, depending on time interval for which I compute segements, and
+the pull-in step rate assumed. That is now 250 steps/sec which is then
+4 msec period which is just my assumed update rate.
+The background routine will have a state variable for RampUp, Plateau, and RampDown.
+The move could be one step only so we may not go thru all states. It seems do processing for
+ramped moves in background as fast as they need to be done. We feed new values as soon
+as old one is used, loaded. At startup, we always compute first segment, and
+critical step values , then post the first segment, and start ISR activity.
+We would not have NewMove flag set so as soon as we post first step, we would
+compute the next right after starting ISR.
+
+
+We go into LinkControl mode on either Stepper1 or Stepper 2 when a SetStep
+command is received (usually over link).
+Stepper 1 is wrapper, Stepper2 is linear slide establishing helix pitch.
+Stepper 2 in interlocked mode moves at fraction of rate for stepper1. Its
+rate is controlled by Pot1 position if out of central dead zone.
+If pot 2 is in dead zone, stepper 2 Three modes of operation for steppers:
+1) Interlocked mode. Used on steppers 1 and 2 for tubing wrapper.
+2) Circular (rotation) mode for steppers 2 and 4 for coffee stirrer.
+3) Ramped move.

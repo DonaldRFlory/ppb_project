@@ -1,0 +1,28 @@
+Here is a summary of all this. On an ATmega328P (Arduino Uno, Nano, etc.), the Arduino core library uses the timers as follows:
+
+Timer 0
+timing and delay functions, using the TIMER0_OVF interrupt
+“fast” PWM at 980 Hz on pins 5 and 6 (PD5 and PD6)
+Timer 1
+“phase-correct” PWM at 490 Hz on pins 9 and 10 (PB1 and PB2)
+Timer 2
+“phase-correct” PWM at 490 Hz on pins 3 and 11 (PD3 and PB3)
+All three timers have their prescalers set to 64. TIMER0_OVF is the only timer interrupt enabled by default.
+
+Note that libraries can use the timers for their own purposes. Servo for instance uses Timer 1 for doing interrupt-based PWM.
+
+Share
+-------------------------------------------------------
+Timer0:
+ Timer0 is a 8bit timer.
+ In the Arduino world timer0 is been used for the timer functions, like delay() 867, millis()
+ 2.0k and micros() 861. If you change timer0 registers, this may influence the Arduino timer function.
+ So you should know what you are doing.
+
+Timer1:
+ Timer1 is a 16bit timer.
+ In the Arduino world the Servo library 1.4k uses timer1 on Arduino Uno (timer5 on Arduino Mega).
+
+Timer2:
+ Timer2 is a 8bit timer like timer0.
+ In the Arduino work the tone() 1.2k function uses timer2.

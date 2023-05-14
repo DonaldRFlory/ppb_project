@@ -1,0 +1,20 @@
+FireButton calls StartFireSequence() which is in Servo.cs .  This sets
+ Firing bool to true and FireTimer to zero. FireTimer counts calls to FireServe() function.
+
+This is called in timer1_Tick() which is called every 10 milliseconds.
+
+Servos each have a slider with spin-boxes on each end to set limits.
+Each servo has spin boxes to control Up and Down increments during cycling.
+Also dwell at each end of motion.
+Service routines for each servo have a bunch of states. The timing values for Delay
+and Dwell are in milliseconds though applied in 10 ms steps so precision is 10 ms.
+Step values are in microseconds of servo PWM setting.
+
+FireServe() is only called (in timeserve) if SensorUpdate checkbox is checked.
+Actually we return from timer1_Tick() 4 times out of 5 before getting to FireServe or UpdateSensors.
+and also before CycleS0Serve().
+CycleS0Serve() cycles S0 between P1 and P3 values.
+SensorUpdate also controls updating sensors (periodic communication with Arduino)
+UpdateSensors() function uses DataUpdate() link call which transfers values down for 4 servos
+and values up for 4 sensors in one link transaction. Then it updates trackbars to show
+A/D of sensors values.

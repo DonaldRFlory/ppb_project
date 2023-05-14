@@ -1,0 +1,71 @@
+Here is a summary of all this. On an ATmega328P (Arduino Uno, Nano, etc.),
+ the Arduino core library uses the timers as follows:
+
+Timer 0
+timing and delay functions, using the TIMER0_OVF interrupt
+“fast” PWM at 980 Hz on pins 5 and 6 (PD5 and PD6)
+
+Timer 1
+“phase-correct” PWM at 490 Hz on pins 9 and 10 (PB1 and PB2)
+
+Timer 2
+“phase-correct” PWM at 490 Hz on pins 3 and 11 (PD3 and PB3)
+All three timers have their prescalers set to 64. TIMER0_OVF is
+the only timer interrupt enabled by default.
+
+Note that libraries can use the timers for their own purposes.
+Servo for instance uses Timer 1 for doing interrupt-based PWM.
+
+Share
+-------------------------------------------------------
+Timer0:
+ Timer0 is a 8bit timer.
+ In the Arduino world timer0 has been used for the timer functions,
+ like delay() 867, millis() 2.0k and micros() 861. If you change timer0
+ registers, this may influence the Arduino timer function.
+ So you should know what you are doing.
+
+Timer1:
+ Timer1 is a 16bit timer.
+ In the Arduino world the Servo library 1.4k uses timer1 on Arduino Uno
+ (timer5 on Arduino Mega).
+
+Timer2:
+ Timer2 is a 8bit timer like timer0.
+ In the Arduino work the tone() 1.2k function uses timer2.
+
+---------------------------------------------------------
+So it appears that I use Timer0 to control two steppers. The input divider
+is set up to give a 4 USec clock period. Full count of 256 thus gives
+1024 USec timing cycle between roll-over. The overflow interrupt gives
+approx 1 msec timing for built in Arduino delay functions.
+The timer also has two compare registers which each produce an interrupt
+on match. By adding a value to the compare register in the compare ISR,
+we can produce interrupts at at any interval which is a multiple of 4 Usec.
+The timer just keeps free running, rolling over every 1025 USec.
+It seems that we worry that if we set increment too low, we may not
+finish servicing interrupt before next is triggered for a given compare
+register so we limit min count to about 10, limiting max rate to about
+25 KHz.
+
+I am, when not stepping, using the Timer0 compare A interrupt to produce
+my one msec tick interrupt. When I use Timer0 for stepping, I lose this.
+I then use Timer2 overflow for msec tick interrupt.
+I do not have access to Timer0 overflow as it is is hooked to built-in
+Arduino delay functions and I did not want to dig into and modify that.
+
+
+So it seems I have done various programs using stepping.
+I can control at most 4 steppers. I use timer0 for steppers 1 and 2
+as described above. I can use Timer2 in a similar way for steppers 3 and 4, using
+the two compare registers, one for each stepper.
+--------------------------------------
+
+For the tube winding fixture, I used two steppers controlled by a single timer
+interrupt. I call this "interlocked" mode.
+
+Interlocked mode is controlled by SetSlaveParameter(SPAR_STEPPERS_INTERLOCKED, Val) call
+over link. The interrupt for stepper 2 is disabled in interlocked mode and
+stepping for stepper 2 is at a sub-multiple of stepper 1 rate. The rate of
+stepper 1 is controlled either by value of Pot1 (plus or minus direction around middle
+of pot range). Stepper 2 goes in same direction.
