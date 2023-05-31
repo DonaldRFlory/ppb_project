@@ -621,7 +621,7 @@
             // 
             // bHome3
             // 
-            this.bHome3.Location = new System.Drawing.Point(286, 195);
+            this.bHome3.Location = new System.Drawing.Point(286, 182);
             this.bHome3.Name = "bHome3";
             this.bHome3.Size = new System.Drawing.Size(46, 22);
             this.bHome3.TabIndex = 58;
@@ -638,7 +638,7 @@
             // 
             // bStopCycle4
             // 
-            this.bStopCycle4.Location = new System.Drawing.Point(345, 166);
+            this.bStopCycle4.Location = new System.Drawing.Point(346, 160);
             this.bStopCycle4.Name = "bStopCycle4";
             this.bStopCycle4.Size = new System.Drawing.Size(46, 22);
             this.bStopCycle4.TabIndex = 57;
@@ -658,7 +658,7 @@
             // 
             // bHome4
             // 
-            this.bHome4.Location = new System.Drawing.Point(345, 196);
+            this.bHome4.Location = new System.Drawing.Point(345, 182);
             this.bHome4.Name = "bHome4";
             this.bHome4.Size = new System.Drawing.Size(46, 22);
             this.bHome4.TabIndex = 55;
@@ -668,7 +668,7 @@
             // 
             // bStopCycle3
             // 
-            this.bStopCycle3.Location = new System.Drawing.Point(286, 167);
+            this.bStopCycle3.Location = new System.Drawing.Point(286, 160);
             this.bStopCycle3.Name = "bStopCycle3";
             this.bStopCycle3.Size = new System.Drawing.Size(46, 22);
             this.bStopCycle3.TabIndex = 54;
@@ -678,7 +678,7 @@
             // 
             // bStartCycle3
             // 
-            this.bStartCycle3.Location = new System.Drawing.Point(286, 139);
+            this.bStartCycle3.Location = new System.Drawing.Point(286, 138);
             this.bStartCycle3.Name = "bStartCycle3";
             this.bStartCycle3.Size = new System.Drawing.Size(46, 22);
             this.bStartCycle3.TabIndex = 53;
@@ -688,7 +688,7 @@
             // 
             // bHome2
             // 
-            this.bHome2.Location = new System.Drawing.Point(223, 196);
+            this.bHome2.Location = new System.Drawing.Point(223, 182);
             this.bHome2.Name = "bHome2";
             this.bHome2.Size = new System.Drawing.Size(46, 22);
             this.bHome2.TabIndex = 52;
@@ -698,7 +698,7 @@
             // 
             // bStopCycle2
             // 
-            this.bStopCycle2.Location = new System.Drawing.Point(223, 168);
+            this.bStopCycle2.Location = new System.Drawing.Point(223, 160);
             this.bStopCycle2.Name = "bStopCycle2";
             this.bStopCycle2.Size = new System.Drawing.Size(46, 22);
             this.bStopCycle2.TabIndex = 51;
@@ -708,7 +708,7 @@
             // 
             // bStartCycle2
             // 
-            this.bStartCycle2.Location = new System.Drawing.Point(223, 140);
+            this.bStartCycle2.Location = new System.Drawing.Point(223, 138);
             this.bStartCycle2.Name = "bStartCycle2";
             this.bStartCycle2.Size = new System.Drawing.Size(46, 22);
             this.bStartCycle2.TabIndex = 50;
@@ -718,7 +718,7 @@
             // 
             // bHome
             // 
-            this.bHome.Location = new System.Drawing.Point(160, 196);
+            this.bHome.Location = new System.Drawing.Point(160, 182);
             this.bHome.Name = "bHome";
             this.bHome.Size = new System.Drawing.Size(46, 22);
             this.bHome.TabIndex = 49;
@@ -728,7 +728,7 @@
             // 
             // bStopCycle
             // 
-            this.bStopCycle.Location = new System.Drawing.Point(160, 168);
+            this.bStopCycle.Location = new System.Drawing.Point(160, 160);
             this.bStopCycle.Name = "bStopCycle";
             this.bStopCycle.Size = new System.Drawing.Size(46, 22);
             this.bStopCycle.TabIndex = 48;
@@ -738,7 +738,7 @@
             // 
             // bStartCycle
             // 
-            this.bStartCycle.Location = new System.Drawing.Point(160, 140);
+            this.bStartCycle.Location = new System.Drawing.Point(160, 138);
             this.bStartCycle.Name = "bStartCycle";
             this.bStartCycle.Size = new System.Drawing.Size(46, 22);
             this.bStartCycle.TabIndex = 47;
@@ -3963,6 +3963,13 @@
             this.button7.Text = "MServe";
             this.button7.UseVisualStyleBackColor = true;
             this.button7.Click += new System.EventHandler(this.button7_Click);
+            // 
+            // button2
+            // 
+            this.button2.Location = new System.Drawing.Point(0, 0);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(75, 23);
+            this.button2.TabIndex = 0;
             // 
             // Form1
             // 
