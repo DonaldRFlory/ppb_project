@@ -7,6 +7,9 @@
 #include "slink.h"
 #include "slavparm.h"
 
+U8 HomeStepper(U8 Index);
+U8 CycleStepper(U8 Index, bool enable);
+U8 ResetStepPos(U8 Index);
 #define TRACE_BUFF_LEN 512
 U8 StrBuffer[64];
 U8 TraceBuffer[TRACE_BUFF_LEN];
@@ -35,8 +38,6 @@ void WriteTraceBuffer(U8* InBuff, U16 Count)
     }
 }
 
-void SetSteppersInterlocked(bool InterlockedMode);
-extern bool SteppersInterlocked;
 extern bool SwitchOn;
 
 U8 SetServoUsec(U8 ServoIndex, U16 USec);
@@ -45,7 +46,6 @@ void TurnLEDOn();
 void LoadInputValues();
 
 extern U16 InputVals[MAX_INPUT_VALS];
-extern U16 S1StepCount, S2StepCount;
 
 //This is a link function implementing the Slave side of
 //the host block transfer function:
@@ -239,31 +239,22 @@ U32 GetSlaveParameter(U8 ParCode, U8 Index)
     switch (ParCode)
     {
         case SPAR_STEPPERS_INTERLOCKED:
-            return SteppersInterlocked ? 1 : 0;
+            return 0;
 
         default:
             return 0;
     }
 }
 
-void RotModeControl(bool Active);
-void SegStep();
-void RotServe();
-void RotISRWrapper();
-U8 SetRotRadius(U16 Radius);
-extern ROT_SEG RotSegs[2];
 U8 ParsGroup = 1;
-extern bool S1LinkControl, S2LinkControl;
 U32 SetSlaveParameter(U8 ParCode, U16 Param1, U16 Param2)
 {
     switch (ParCode)
     {
         case SPAR_STEPPERS_INTERLOCKED:
-            SetSteppersInterlocked(Param1 != 0 ? true : false);
             return 0;
 
         case SPAR_STEPPERS_LOCAL:
-            S1LinkControl = S2LinkControl = false;
             return 0;
 
         case SPAR_PARS1:
@@ -283,24 +274,28 @@ U32 SetSlaveParameter(U8 ParCode, U16 Param1, U16 Param2)
             return 0;
 
         case SPAR_ROT_RADIUS:
-            SetRotRadius(Param1);
             return 0;
 
         case SPAR_ROT_ACTIVE:
-            RotModeControl(Param1 != 0);
             return 0;
 
         case SPAR_ROT_SERVE:
-            RotServe();
             return 0;
 
         case SPAR_ROT_ISR:
-            RotISRWrapper();
             return 0;
 
-        case SPAR_SEG_STEP:
-            SegStep();
-            return 0;
+        case SPAR_RESET_STEP_POS:
+            return ResetStepPos((U8)Param1);
+
+        case SPAR_HOME_STEPPER:
+            return HomeStepper((U8)Param1);
+
+        case SPAR_CYCLE_STEPPER:
+            return CycleStepper((U8)Param1, true);
+
+        case SPAR_STOP_STEPPER_CYCLE:
+            return CycleStepper((U8)Param1, false);
 
         case SPAR_TRACE_TEST:
             sprintf(StrBuffer, "Trace buffer test: %d, %d\n", Param1, Param2);

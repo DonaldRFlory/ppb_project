@@ -47,24 +47,66 @@
             this.ButLineLower = new System.Windows.Forms.Button();
             this.ButPageLower = new System.Windows.Forms.Button();
             this.tabMenuPage = new System.Windows.Forms.TabPage();
-            this.LMenuTitle = new System.Windows.Forms.Label();
+            this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.bHome3 = new System.Windows.Forms.Button();
+            this.button12 = new System.Windows.Forms.Button();
+            this.bStopCycle4 = new System.Windows.Forms.Button();
+            this.bStartCycle4 = new System.Windows.Forms.Button();
+            this.bHome4 = new System.Windows.Forms.Button();
+            this.bStopCycle3 = new System.Windows.Forms.Button();
+            this.bStartCycle3 = new System.Windows.Forms.Button();
+            this.bHome2 = new System.Windows.Forms.Button();
+            this.bStopCycle2 = new System.Windows.Forms.Button();
+            this.bStartCycle2 = new System.Windows.Forms.Button();
+            this.bHome = new System.Windows.Forms.Button();
+            this.bStopCycle = new System.Windows.Forms.Button();
+            this.bStartCycle = new System.Windows.Forms.Button();
+            this.nudSteps = new System.Windows.Forms.NumericUpDown();
+            this.groupBox5 = new System.Windows.Forms.GroupBox();
+            this.bMovS4 = new System.Windows.Forms.Button();
+            this.bMovS3 = new System.Windows.Forms.Button();
+            this.bMovS2 = new System.Windows.Forms.Button();
+            this.bMovS1 = new System.Windows.Forms.Button();
+            this.rbP4 = new System.Windows.Forms.RadioButton();
+            this.rbP3 = new System.Windows.Forms.RadioButton();
+            this.rbP2 = new System.Windows.Forms.RadioButton();
+            this.rbP1 = new System.Windows.Forms.RadioButton();
+            this.label47 = new System.Windows.Forms.Label();
+            this.tbS4 = new System.Windows.Forms.TextBox();
+            this.label46 = new System.Windows.Forms.Label();
+            this.tbS3 = new System.Windows.Forms.TextBox();
+            this.label45 = new System.Windows.Forms.Label();
+            this.tbS2 = new System.Windows.Forms.TextBox();
+            this.label44 = new System.Windows.Forms.Label();
+            this.tbS1 = new System.Windows.Forms.TextBox();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.cbLim1 = new System.Windows.Forms.CheckBox();
+            this.cbSwitch1 = new System.Windows.Forms.CheckBox();
+            this.cbLim4 = new System.Windows.Forms.CheckBox();
+            this.cbLim2 = new System.Windows.Forms.CheckBox();
+            this.cbLim3 = new System.Windows.Forms.CheckBox();
+            this.cbSensorUpdate = new System.Windows.Forms.CheckBox();
+            this.tbSensor2 = new System.Windows.Forms.TextBox();
+            this.label39 = new System.Windows.Forms.Label();
+            this.tbarSensor4 = new System.Windows.Forms.TrackBar();
+            this.label37 = new System.Windows.Forms.Label();
+            this.tbSensor1 = new System.Windows.Forms.TextBox();
+            this.tbarSensor3 = new System.Windows.Forms.TrackBar();
+            this.tbSensor3 = new System.Windows.Forms.TextBox();
+            this.label40 = new System.Windows.Forms.Label();
+            this.tbarSensor2 = new System.Windows.Forms.TrackBar();
+            this.label38 = new System.Windows.Forms.Label();
+            this.tbarSensor1 = new System.Windows.Forms.TrackBar();
+            this.tbSensor4 = new System.Windows.Forms.TextBox();
             this.EscapeButton = new System.Windows.Forms.Button();
             this.MenuListBox = new System.Windows.Forms.ListBox();
+            this.LMenuTitle = new System.Windows.Forms.Label();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tpServo = new System.Windows.Forms.TabPage();
             this.groupBox21 = new System.Windows.Forms.GroupBox();
-            this.tbSensor2 = new System.Windows.Forms.TextBox();
-            this.label37 = new System.Windows.Forms.Label();
-            this.tbSensor1 = new System.Windows.Forms.TextBox();
-            this.tbSensor3 = new System.Windows.Forms.TextBox();
-            this.tbarSensor1 = new System.Windows.Forms.TrackBar();
-            this.label38 = new System.Windows.Forms.Label();
-            this.tbSensor4 = new System.Windows.Forms.TextBox();
-            this.tbarSensor2 = new System.Windows.Forms.TrackBar();
-            this.label39 = new System.Windows.Forms.Label();
-            this.label40 = new System.Windows.Forms.Label();
-            this.tbarSensor3 = new System.Windows.Forms.TrackBar();
-            this.tbarSensor4 = new System.Windows.Forms.TrackBar();
+            this.button1 = new System.Windows.Forms.Button();
+            this.cbPinWave = new System.Windows.Forms.CheckBox();
+            this.cbServoDirect = new System.Windows.Forms.CheckBox();
             this.groupBox17 = new System.Windows.Forms.GroupBox();
             this.label24 = new System.Windows.Forms.Label();
             this.label23 = new System.Windows.Forms.Label();
@@ -264,7 +306,6 @@
             this.tbMax16 = new System.Windows.Forms.TextBox();
             this.tbMin16 = new System.Windows.Forms.TextBox();
             this.groupBox7 = new System.Windows.Forms.GroupBox();
-            this.cbPinWave = new System.Windows.Forms.CheckBox();
             this.cbVal8 = new System.Windows.Forms.TextBox();
             this.cbVal7 = new System.Windows.Forms.TextBox();
             this.cbVal6 = new System.Windows.Forms.TextBox();
@@ -298,38 +339,22 @@
             this.tbar2 = new System.Windows.Forms.TrackBar();
             this.tbar1 = new System.Windows.Forms.TrackBar();
             this.groupBox13 = new System.Windows.Forms.GroupBox();
-            this.label47 = new System.Windows.Forms.Label();
-            this.tbS2Period = new System.Windows.Forms.TextBox();
-            this.label46 = new System.Windows.Forms.Label();
-            this.tbInfl1 = new System.Windows.Forms.TextBox();
-            this.label45 = new System.Windows.Forms.Label();
-            this.tbS2Steps = new System.Windows.Forms.TextBox();
-            this.label44 = new System.Windows.Forms.Label();
-            this.tbS1Steps = new System.Windows.Forms.TextBox();
-            this.label43 = new System.Windows.Forms.Label();
-            this.cbLim1 = new System.Windows.Forms.CheckBox();
-            this.cbLim4 = new System.Windows.Forms.CheckBox();
-            this.cbLim2 = new System.Windows.Forms.CheckBox();
-            this.cbLim3 = new System.Windows.Forms.CheckBox();
             this.label42 = new System.Windows.Forms.Label();
-            this.cbSwitch1 = new System.Windows.Forms.CheckBox();
             this.bFire = new System.Windows.Forms.Button();
             this.bDisableAll = new System.Windows.Forms.Button();
             this.groupBox9 = new System.Windows.Forms.GroupBox();
-            this.button1 = new System.Windows.Forms.Button();
-            this.cbServoDirect = new System.Windows.Forms.CheckBox();
             this.label53 = new System.Windows.Forms.Label();
             this.label52 = new System.Windows.Forms.Label();
             this.cb3 = new System.Windows.Forms.CheckBox();
             this.cb2 = new System.Windows.Forms.CheckBox();
             this.cb1 = new System.Windows.Forms.CheckBox();
             this.cb0 = new System.Windows.Forms.CheckBox();
-            this.cbSensorUpdate = new System.Windows.Forms.CheckBox();
+            this.tpStatus = new System.Windows.Forms.TabPage();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.nudCurrentChannel = new System.Windows.Forms.NumericUpDown();
-            this.bDisconnect = new System.Windows.Forms.Button();
             this.rbSerial = new System.Windows.Forms.RadioButton();
             this.rbUSB = new System.Windows.Forms.RadioButton();
+            this.bDisconnect = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.rbSelectSerial = new System.Windows.Forms.RadioButton();
             this.rbSelectUSB = new System.Windows.Forms.RadioButton();
@@ -348,15 +373,20 @@
             this.button5 = new System.Windows.Forms.Button();
             this.button6 = new System.Windows.Forms.Button();
             this.button7 = new System.Windows.Forms.Button();
+            this.button2 = new System.Windows.Forms.Button();
             this.tabMemoryPage.SuspendLayout();
             this.tabMenuPage.SuspendLayout();
+            this.groupBox4.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudSteps)).BeginInit();
+            this.groupBox5.SuspendLayout();
+            this.groupBox3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.tbarSensor4)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tbarSensor3)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tbarSensor2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tbarSensor1)).BeginInit();
             this.tabControl1.SuspendLayout();
             this.tpServo.SuspendLayout();
             this.groupBox21.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.tbarSensor1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.tbarSensor2)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.tbarSensor3)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.tbarSensor4)).BeginInit();
             this.groupBox17.SuspendLayout();
             this.groupBox10.SuspendLayout();
             this.groupBox7.SuspendLayout();
@@ -441,7 +471,7 @@
             this.tabMemoryPage.Location = new System.Drawing.Point(4, 22);
             this.tabMemoryPage.Name = "tabMemoryPage";
             this.tabMemoryPage.Padding = new System.Windows.Forms.Padding(3);
-            this.tabMemoryPage.Size = new System.Drawing.Size(923, 468);
+            this.tabMemoryPage.Size = new System.Drawing.Size(768, 468);
             this.tabMemoryPage.TabIndex = 2;
             this.tabMemoryPage.Text = "Memory";
             // 
@@ -539,30 +569,576 @@
             // 
             this.tabMenuPage.BackColor = System.Drawing.Color.Transparent;
             this.tabMenuPage.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("tabMenuPage.BackgroundImage")));
-            this.tabMenuPage.Controls.Add(this.LMenuTitle);
+            this.tabMenuPage.Controls.Add(this.groupBox4);
             this.tabMenuPage.Controls.Add(this.EscapeButton);
             this.tabMenuPage.Controls.Add(this.MenuListBox);
+            this.tabMenuPage.Controls.Add(this.LMenuTitle);
             this.tabMenuPage.Location = new System.Drawing.Point(4, 22);
             this.tabMenuPage.Name = "tabMenuPage";
             this.tabMenuPage.Padding = new System.Windows.Forms.Padding(3);
-            this.tabMenuPage.Size = new System.Drawing.Size(923, 468);
+            this.tabMenuPage.Size = new System.Drawing.Size(768, 468);
             this.tabMenuPage.TabIndex = 0;
             this.tabMenuPage.Text = "Menu";
             // 
-            // LMenuTitle
+            // groupBox4
             // 
-            this.LMenuTitle.BackColor = System.Drawing.SystemColors.Menu;
-            this.LMenuTitle.Dock = System.Windows.Forms.DockStyle.Top;
-            this.LMenuTitle.Location = new System.Drawing.Point(3, 3);
-            this.LMenuTitle.Name = "LMenuTitle";
-            this.LMenuTitle.Size = new System.Drawing.Size(917, 15);
-            this.LMenuTitle.TabIndex = 9;
-            this.LMenuTitle.Text = "Menu Title";
-            this.LMenuTitle.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.groupBox4.BackColor = System.Drawing.Color.LightGray;
+            this.groupBox4.Controls.Add(this.bHome3);
+            this.groupBox4.Controls.Add(this.button12);
+            this.groupBox4.Controls.Add(this.bStopCycle4);
+            this.groupBox4.Controls.Add(this.bStartCycle4);
+            this.groupBox4.Controls.Add(this.bHome4);
+            this.groupBox4.Controls.Add(this.bStopCycle3);
+            this.groupBox4.Controls.Add(this.bStartCycle3);
+            this.groupBox4.Controls.Add(this.bHome2);
+            this.groupBox4.Controls.Add(this.bStopCycle2);
+            this.groupBox4.Controls.Add(this.bStartCycle2);
+            this.groupBox4.Controls.Add(this.bHome);
+            this.groupBox4.Controls.Add(this.bStopCycle);
+            this.groupBox4.Controls.Add(this.bStartCycle);
+            this.groupBox4.Controls.Add(this.nudSteps);
+            this.groupBox4.Controls.Add(this.groupBox5);
+            this.groupBox4.Controls.Add(this.groupBox3);
+            this.groupBox4.Controls.Add(this.cbSensorUpdate);
+            this.groupBox4.Controls.Add(this.tbSensor2);
+            this.groupBox4.Controls.Add(this.label39);
+            this.groupBox4.Controls.Add(this.tbarSensor4);
+            this.groupBox4.Controls.Add(this.label37);
+            this.groupBox4.Controls.Add(this.tbSensor1);
+            this.groupBox4.Controls.Add(this.tbarSensor3);
+            this.groupBox4.Controls.Add(this.tbSensor3);
+            this.groupBox4.Controls.Add(this.label40);
+            this.groupBox4.Controls.Add(this.tbarSensor2);
+            this.groupBox4.Controls.Add(this.label38);
+            this.groupBox4.Controls.Add(this.tbarSensor1);
+            this.groupBox4.Controls.Add(this.tbSensor4);
+            this.groupBox4.Location = new System.Drawing.Point(364, 0);
+            this.groupBox4.Name = "groupBox4";
+            this.groupBox4.Size = new System.Drawing.Size(403, 467);
+            this.groupBox4.TabIndex = 25;
+            this.groupBox4.TabStop = false;
+            this.groupBox4.Text = "groupBox4";
+            // 
+            // bHome3
+            // 
+            this.bHome3.Location = new System.Drawing.Point(286, 195);
+            this.bHome3.Name = "bHome3";
+            this.bHome3.Size = new System.Drawing.Size(46, 22);
+            this.bHome3.TabIndex = 58;
+            this.bHome3.Text = "Home";
+            this.bHome3.UseVisualStyleBackColor = true;
+            this.bHome3.Click += new System.EventHandler(this.bHome3_Click);
+            // 
+            // button12
+            // 
+            this.button12.Location = new System.Drawing.Point(0, 0);
+            this.button12.Name = "button12";
+            this.button12.Size = new System.Drawing.Size(75, 23);
+            this.button12.TabIndex = 0;
+            // 
+            // bStopCycle4
+            // 
+            this.bStopCycle4.Location = new System.Drawing.Point(345, 166);
+            this.bStopCycle4.Name = "bStopCycle4";
+            this.bStopCycle4.Size = new System.Drawing.Size(46, 22);
+            this.bStopCycle4.TabIndex = 57;
+            this.bStopCycle4.Text = "Stop";
+            this.bStopCycle4.UseVisualStyleBackColor = true;
+            this.bStopCycle4.Click += new System.EventHandler(this.bStopCycle4_Click);
+            // 
+            // bStartCycle4
+            // 
+            this.bStartCycle4.Location = new System.Drawing.Point(345, 138);
+            this.bStartCycle4.Name = "bStartCycle4";
+            this.bStartCycle4.Size = new System.Drawing.Size(46, 22);
+            this.bStartCycle4.TabIndex = 56;
+            this.bStartCycle4.Text = "Cyc";
+            this.bStartCycle4.UseVisualStyleBackColor = true;
+            this.bStartCycle4.Click += new System.EventHandler(this.bStartCycle4_Click);
+            // 
+            // bHome4
+            // 
+            this.bHome4.Location = new System.Drawing.Point(345, 196);
+            this.bHome4.Name = "bHome4";
+            this.bHome4.Size = new System.Drawing.Size(46, 22);
+            this.bHome4.TabIndex = 55;
+            this.bHome4.Text = "Home";
+            this.bHome4.UseVisualStyleBackColor = true;
+            this.bHome4.Click += new System.EventHandler(this.bHome4_Click);
+            // 
+            // bStopCycle3
+            // 
+            this.bStopCycle3.Location = new System.Drawing.Point(286, 167);
+            this.bStopCycle3.Name = "bStopCycle3";
+            this.bStopCycle3.Size = new System.Drawing.Size(46, 22);
+            this.bStopCycle3.TabIndex = 54;
+            this.bStopCycle3.Text = "Stop";
+            this.bStopCycle3.UseVisualStyleBackColor = true;
+            this.bStopCycle3.Click += new System.EventHandler(this.bStopCycle3_Click);
+            // 
+            // bStartCycle3
+            // 
+            this.bStartCycle3.Location = new System.Drawing.Point(286, 139);
+            this.bStartCycle3.Name = "bStartCycle3";
+            this.bStartCycle3.Size = new System.Drawing.Size(46, 22);
+            this.bStartCycle3.TabIndex = 53;
+            this.bStartCycle3.Text = "Cyc";
+            this.bStartCycle3.UseVisualStyleBackColor = true;
+            this.bStartCycle3.Click += new System.EventHandler(this.bStartCycle3_Click);
+            // 
+            // bHome2
+            // 
+            this.bHome2.Location = new System.Drawing.Point(223, 196);
+            this.bHome2.Name = "bHome2";
+            this.bHome2.Size = new System.Drawing.Size(46, 22);
+            this.bHome2.TabIndex = 52;
+            this.bHome2.Text = "Home";
+            this.bHome2.UseVisualStyleBackColor = true;
+            this.bHome2.Click += new System.EventHandler(this.bHome2_Click);
+            // 
+            // bStopCycle2
+            // 
+            this.bStopCycle2.Location = new System.Drawing.Point(223, 168);
+            this.bStopCycle2.Name = "bStopCycle2";
+            this.bStopCycle2.Size = new System.Drawing.Size(46, 22);
+            this.bStopCycle2.TabIndex = 51;
+            this.bStopCycle2.Text = "Stop";
+            this.bStopCycle2.UseVisualStyleBackColor = true;
+            this.bStopCycle2.Click += new System.EventHandler(this.bStopCycle2_Click);
+            // 
+            // bStartCycle2
+            // 
+            this.bStartCycle2.Location = new System.Drawing.Point(223, 140);
+            this.bStartCycle2.Name = "bStartCycle2";
+            this.bStartCycle2.Size = new System.Drawing.Size(46, 22);
+            this.bStartCycle2.TabIndex = 50;
+            this.bStartCycle2.Text = "Cyc";
+            this.bStartCycle2.UseVisualStyleBackColor = true;
+            this.bStartCycle2.Click += new System.EventHandler(this.bStartCycle2_Click);
+            // 
+            // bHome
+            // 
+            this.bHome.Location = new System.Drawing.Point(160, 196);
+            this.bHome.Name = "bHome";
+            this.bHome.Size = new System.Drawing.Size(46, 22);
+            this.bHome.TabIndex = 49;
+            this.bHome.Text = "Home";
+            this.bHome.UseVisualStyleBackColor = true;
+            this.bHome.Click += new System.EventHandler(this.bHome_Click);
+            // 
+            // bStopCycle
+            // 
+            this.bStopCycle.Location = new System.Drawing.Point(160, 168);
+            this.bStopCycle.Name = "bStopCycle";
+            this.bStopCycle.Size = new System.Drawing.Size(46, 22);
+            this.bStopCycle.TabIndex = 48;
+            this.bStopCycle.Text = "Stop";
+            this.bStopCycle.UseVisualStyleBackColor = true;
+            this.bStopCycle.Click += new System.EventHandler(this.bStopCycle_Click);
+            // 
+            // bStartCycle
+            // 
+            this.bStartCycle.Location = new System.Drawing.Point(160, 140);
+            this.bStartCycle.Name = "bStartCycle";
+            this.bStartCycle.Size = new System.Drawing.Size(46, 22);
+            this.bStartCycle.TabIndex = 47;
+            this.bStartCycle.Text = "Cyc";
+            this.bStartCycle.UseVisualStyleBackColor = true;
+            this.bStartCycle.Click += new System.EventHandler(this.bStartCycle_Click);
+            // 
+            // nudSteps
+            // 
+            this.nudSteps.Location = new System.Drawing.Point(222, 109);
+            this.nudSteps.Maximum = new decimal(new int[] {
+            100000,
+            0,
+            0,
+            0});
+            this.nudSteps.Minimum = new decimal(new int[] {
+            100000,
+            0,
+            0,
+            -2147483648});
+            this.nudSteps.Name = "nudSteps";
+            this.nudSteps.Size = new System.Drawing.Size(64, 20);
+            this.nudSteps.TabIndex = 46;
+            // 
+            // groupBox5
+            // 
+            this.groupBox5.BackColor = System.Drawing.Color.Gainsboro;
+            this.groupBox5.Controls.Add(this.bMovS4);
+            this.groupBox5.Controls.Add(this.bMovS3);
+            this.groupBox5.Controls.Add(this.bMovS2);
+            this.groupBox5.Controls.Add(this.bMovS1);
+            this.groupBox5.Controls.Add(this.rbP4);
+            this.groupBox5.Controls.Add(this.rbP3);
+            this.groupBox5.Controls.Add(this.rbP2);
+            this.groupBox5.Controls.Add(this.rbP1);
+            this.groupBox5.Controls.Add(this.label47);
+            this.groupBox5.Controls.Add(this.tbS4);
+            this.groupBox5.Controls.Add(this.label46);
+            this.groupBox5.Controls.Add(this.tbS3);
+            this.groupBox5.Controls.Add(this.label45);
+            this.groupBox5.Controls.Add(this.tbS2);
+            this.groupBox5.Controls.Add(this.label44);
+            this.groupBox5.Controls.Add(this.tbS1);
+            this.groupBox5.Location = new System.Drawing.Point(90, 17);
+            this.groupBox5.Name = "groupBox5";
+            this.groupBox5.Size = new System.Drawing.Size(312, 88);
+            this.groupBox5.TabIndex = 45;
+            this.groupBox5.TabStop = false;
+            this.groupBox5.Text = "groupBox5";
+            // 
+            // bMovS4
+            // 
+            this.bMovS4.Location = new System.Drawing.Point(259, 56);
+            this.bMovS4.Name = "bMovS4";
+            this.bMovS4.Size = new System.Drawing.Size(43, 25);
+            this.bMovS4.TabIndex = 52;
+            this.bMovS4.Text = "Step";
+            this.bMovS4.UseVisualStyleBackColor = true;
+            this.bMovS4.Click += new System.EventHandler(this.bMovS4_Click);
+            // 
+            // bMovS3
+            // 
+            this.bMovS3.Location = new System.Drawing.Point(196, 56);
+            this.bMovS3.Name = "bMovS3";
+            this.bMovS3.Size = new System.Drawing.Size(43, 25);
+            this.bMovS3.TabIndex = 51;
+            this.bMovS3.Text = "Step";
+            this.bMovS3.UseVisualStyleBackColor = true;
+            this.bMovS3.Click += new System.EventHandler(this.bMovS3_Click);
+            // 
+            // bMovS2
+            // 
+            this.bMovS2.Location = new System.Drawing.Point(132, 56);
+            this.bMovS2.Name = "bMovS2";
+            this.bMovS2.Size = new System.Drawing.Size(45, 25);
+            this.bMovS2.TabIndex = 50;
+            this.bMovS2.Text = "Step";
+            this.bMovS2.UseVisualStyleBackColor = true;
+            this.bMovS2.Click += new System.EventHandler(this.bMovS2_Click);
+            // 
+            // bMovS1
+            // 
+            this.bMovS1.Location = new System.Drawing.Point(73, 56);
+            this.bMovS1.Name = "bMovS1";
+            this.bMovS1.Size = new System.Drawing.Size(39, 25);
+            this.bMovS1.TabIndex = 49;
+            this.bMovS1.Text = "Step";
+            this.bMovS1.UseVisualStyleBackColor = true;
+            this.bMovS1.Click += new System.EventHandler(this.bMovS1_Click);
+            // 
+            // rbP4
+            // 
+            this.rbP4.AutoSize = true;
+            this.rbP4.Location = new System.Drawing.Point(1, 67);
+            this.rbP4.Name = "rbP4";
+            this.rbP4.Size = new System.Drawing.Size(43, 17);
+            this.rbP4.TabIndex = 48;
+            this.rbP4.TabStop = true;
+            this.rbP4.Text = "???";
+            this.rbP4.UseVisualStyleBackColor = true;
+            this.rbP4.CheckedChanged += new System.EventHandler(this.rbP4_CheckedChanged);
+            // 
+            // rbP3
+            // 
+            this.rbP3.AutoSize = true;
+            this.rbP3.Location = new System.Drawing.Point(1, 50);
+            this.rbP3.Name = "rbP3";
+            this.rbP3.Size = new System.Drawing.Size(55, 17);
+            this.rbP3.TabIndex = 47;
+            this.rbP3.TabStop = true;
+            this.rbP3.Text = "Period";
+            this.rbP3.UseVisualStyleBackColor = true;
+            this.rbP3.CheckedChanged += new System.EventHandler(this.rbP3_CheckedChanged);
+            // 
+            // rbP2
+            // 
+            this.rbP2.AutoSize = true;
+            this.rbP2.Location = new System.Drawing.Point(1, 33);
+            this.rbP2.Name = "rbP2";
+            this.rbP2.Size = new System.Drawing.Size(43, 17);
+            this.rbP2.TabIndex = 46;
+            this.rbP2.TabStop = true;
+            this.rbP2.Text = "Pos";
+            this.rbP2.UseVisualStyleBackColor = true;
+            this.rbP2.CheckedChanged += new System.EventHandler(this.rbP2_CheckedChanged);
+            // 
+            // rbP1
+            // 
+            this.rbP1.AutoSize = true;
+            this.rbP1.Location = new System.Drawing.Point(1, 16);
+            this.rbP1.Name = "rbP1";
+            this.rbP1.Size = new System.Drawing.Size(52, 17);
+            this.rbP1.TabIndex = 45;
+            this.rbP1.TabStop = true;
+            this.rbP1.Text = "Steps";
+            this.rbP1.UseVisualStyleBackColor = true;
+            this.rbP1.CheckedChanged += new System.EventHandler(this.rbP1_CheckedChanged);
+            // 
+            // label47
+            // 
+            this.label47.AutoSize = true;
+            this.label47.Location = new System.Drawing.Point(271, 38);
+            this.label47.Name = "label47";
+            this.label47.Size = new System.Drawing.Size(20, 13);
+            this.label47.TabIndex = 44;
+            this.label47.Text = "S4";
+            // 
+            // tbS4
+            // 
+            this.tbS4.Location = new System.Drawing.Point(259, 17);
+            this.tbS4.Name = "tbS4";
+            this.tbS4.Size = new System.Drawing.Size(43, 20);
+            this.tbS4.TabIndex = 43;
+            // 
+            // label46
+            // 
+            this.label46.AutoSize = true;
+            this.label46.Location = new System.Drawing.Point(206, 38);
+            this.label46.Name = "label46";
+            this.label46.Size = new System.Drawing.Size(20, 13);
+            this.label46.TabIndex = 42;
+            this.label46.Text = "S3";
+            // 
+            // tbS3
+            // 
+            this.tbS3.Location = new System.Drawing.Point(196, 17);
+            this.tbS3.Name = "tbS3";
+            this.tbS3.Size = new System.Drawing.Size(43, 20);
+            this.tbS3.TabIndex = 41;
+            // 
+            // label45
+            // 
+            this.label45.AutoSize = true;
+            this.label45.Location = new System.Drawing.Point(146, 38);
+            this.label45.Name = "label45";
+            this.label45.Size = new System.Drawing.Size(20, 13);
+            this.label45.TabIndex = 40;
+            this.label45.Text = "S2";
+            // 
+            // tbS2
+            // 
+            this.tbS2.Location = new System.Drawing.Point(132, 18);
+            this.tbS2.Name = "tbS2";
+            this.tbS2.Size = new System.Drawing.Size(45, 20);
+            this.tbS2.TabIndex = 39;
+            // 
+            // label44
+            // 
+            this.label44.AutoSize = true;
+            this.label44.Location = new System.Drawing.Point(83, 38);
+            this.label44.Name = "label44";
+            this.label44.Size = new System.Drawing.Size(20, 13);
+            this.label44.TabIndex = 38;
+            this.label44.Text = "S1";
+            // 
+            // tbS1
+            // 
+            this.tbS1.Location = new System.Drawing.Point(73, 18);
+            this.tbS1.Name = "tbS1";
+            this.tbS1.Size = new System.Drawing.Size(39, 20);
+            this.tbS1.TabIndex = 37;
+            // 
+            // groupBox3
+            // 
+            this.groupBox3.BackColor = System.Drawing.Color.AliceBlue;
+            this.groupBox3.Controls.Add(this.cbLim1);
+            this.groupBox3.Controls.Add(this.cbSwitch1);
+            this.groupBox3.Controls.Add(this.cbLim4);
+            this.groupBox3.Controls.Add(this.cbLim2);
+            this.groupBox3.Controls.Add(this.cbLim3);
+            this.groupBox3.Location = new System.Drawing.Point(8, 19);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Size = new System.Drawing.Size(79, 108);
+            this.groupBox3.TabIndex = 36;
+            this.groupBox3.TabStop = false;
+            this.groupBox3.Text = "Limits";
+            // 
+            // cbLim1
+            // 
+            this.cbLim1.AutoSize = true;
+            this.cbLim1.Location = new System.Drawing.Point(8, 19);
+            this.cbLim1.Name = "cbLim1";
+            this.cbLim1.Size = new System.Drawing.Size(32, 17);
+            this.cbLim1.TabIndex = 22;
+            this.cbLim1.Text = "1";
+            this.cbLim1.UseVisualStyleBackColor = true;
+            // 
+            // cbSwitch1
+            // 
+            this.cbSwitch1.AutoSize = true;
+            this.cbSwitch1.Location = new System.Drawing.Point(8, 91);
+            this.cbSwitch1.Name = "cbSwitch1";
+            this.cbSwitch1.Size = new System.Drawing.Size(64, 17);
+            this.cbSwitch1.TabIndex = 13;
+            this.cbSwitch1.Text = "Switch1";
+            this.cbSwitch1.UseVisualStyleBackColor = true;
+            // 
+            // cbLim4
+            // 
+            this.cbLim4.AutoSize = true;
+            this.cbLim4.Location = new System.Drawing.Point(8, 70);
+            this.cbLim4.Name = "cbLim4";
+            this.cbLim4.Size = new System.Drawing.Size(32, 17);
+            this.cbLim4.TabIndex = 25;
+            this.cbLim4.Text = "4";
+            this.cbLim4.UseVisualStyleBackColor = true;
+            // 
+            // cbLim2
+            // 
+            this.cbLim2.AutoSize = true;
+            this.cbLim2.Location = new System.Drawing.Point(8, 36);
+            this.cbLim2.Name = "cbLim2";
+            this.cbLim2.Size = new System.Drawing.Size(32, 17);
+            this.cbLim2.TabIndex = 23;
+            this.cbLim2.Text = "2";
+            this.cbLim2.UseVisualStyleBackColor = true;
+            // 
+            // cbLim3
+            // 
+            this.cbLim3.AutoSize = true;
+            this.cbLim3.Location = new System.Drawing.Point(8, 53);
+            this.cbLim3.Name = "cbLim3";
+            this.cbLim3.Size = new System.Drawing.Size(32, 17);
+            this.cbLim3.TabIndex = 24;
+            this.cbLim3.Text = "3";
+            this.cbLim3.UseVisualStyleBackColor = true;
+            // 
+            // cbSensorUpdate
+            // 
+            this.cbSensorUpdate.AutoSize = true;
+            this.cbSensorUpdate.Location = new System.Drawing.Point(7, 446);
+            this.cbSensorUpdate.Name = "cbSensorUpdate";
+            this.cbSensorUpdate.Size = new System.Drawing.Size(94, 17);
+            this.cbSensorUpdate.TabIndex = 27;
+            this.cbSensorUpdate.Text = "SensorUpdate";
+            this.cbSensorUpdate.UseVisualStyleBackColor = true;
+            // 
+            // tbSensor2
+            // 
+            this.tbSensor2.Location = new System.Drawing.Point(46, 417);
+            this.tbSensor2.Name = "tbSensor2";
+            this.tbSensor2.Size = new System.Drawing.Size(40, 20);
+            this.tbSensor2.TabIndex = 35;
+            this.tbSensor2.Text = "0000";
+            // 
+            // label39
+            // 
+            this.label39.AutoSize = true;
+            this.label39.Location = new System.Drawing.Point(92, 402);
+            this.label39.Name = "label39";
+            this.label39.Size = new System.Drawing.Size(37, 13);
+            this.label39.TabIndex = 28;
+            this.label39.Text = "Sens3";
+            // 
+            // tbarSensor4
+            // 
+            this.tbarSensor4.AutoSize = false;
+            this.tbarSensor4.BackColor = System.Drawing.Color.MediumSpringGreen;
+            this.tbarSensor4.Location = new System.Drawing.Point(147, 246);
+            this.tbarSensor4.Maximum = 1024;
+            this.tbarSensor4.Name = "tbarSensor4";
+            this.tbarSensor4.Orientation = System.Windows.Forms.Orientation.Vertical;
+            this.tbarSensor4.Size = new System.Drawing.Size(16, 153);
+            this.tbarSensor4.TabIndex = 23;
+            this.tbarSensor4.TickFrequency = 100;
+            this.tbarSensor4.TickStyle = System.Windows.Forms.TickStyle.None;
+            // 
+            // label37
+            // 
+            this.label37.AutoSize = true;
+            this.label37.Location = new System.Drawing.Point(0, 402);
+            this.label37.Name = "label37";
+            this.label37.Size = new System.Drawing.Size(37, 13);
+            this.label37.TabIndex = 29;
+            this.label37.Text = "Sens1";
+            // 
+            // tbSensor1
+            // 
+            this.tbSensor1.Location = new System.Drawing.Point(3, 417);
+            this.tbSensor1.Name = "tbSensor1";
+            this.tbSensor1.Size = new System.Drawing.Size(36, 20);
+            this.tbSensor1.TabIndex = 34;
+            this.tbSensor1.Text = "0000";
+            // 
+            // tbarSensor3
+            // 
+            this.tbarSensor3.AutoSize = false;
+            this.tbarSensor3.BackColor = System.Drawing.Color.MediumSpringGreen;
+            this.tbarSensor3.Location = new System.Drawing.Point(98, 246);
+            this.tbarSensor3.Maximum = 1024;
+            this.tbarSensor3.Name = "tbarSensor3";
+            this.tbarSensor3.Orientation = System.Windows.Forms.Orientation.Vertical;
+            this.tbarSensor3.Size = new System.Drawing.Size(16, 153);
+            this.tbarSensor3.TabIndex = 24;
+            this.tbarSensor3.TickFrequency = 100;
+            this.tbarSensor3.TickStyle = System.Windows.Forms.TickStyle.None;
+            // 
+            // tbSensor3
+            // 
+            this.tbSensor3.Location = new System.Drawing.Point(96, 417);
+            this.tbSensor3.Name = "tbSensor3";
+            this.tbSensor3.Size = new System.Drawing.Size(35, 20);
+            this.tbSensor3.TabIndex = 33;
+            this.tbSensor3.Text = "0000";
+            // 
+            // label40
+            // 
+            this.label40.AutoSize = true;
+            this.label40.Location = new System.Drawing.Point(138, 402);
+            this.label40.Name = "label40";
+            this.label40.Size = new System.Drawing.Size(37, 13);
+            this.label40.TabIndex = 30;
+            this.label40.Text = "Sens4";
+            // 
+            // tbarSensor2
+            // 
+            this.tbarSensor2.AutoSize = false;
+            this.tbarSensor2.BackColor = System.Drawing.Color.MediumSpringGreen;
+            this.tbarSensor2.Location = new System.Drawing.Point(55, 246);
+            this.tbarSensor2.Maximum = 1024;
+            this.tbarSensor2.Name = "tbarSensor2";
+            this.tbarSensor2.Orientation = System.Windows.Forms.Orientation.Vertical;
+            this.tbarSensor2.Size = new System.Drawing.Size(16, 153);
+            this.tbarSensor2.TabIndex = 25;
+            this.tbarSensor2.TickFrequency = 100;
+            this.tbarSensor2.TickStyle = System.Windows.Forms.TickStyle.None;
+            // 
+            // label38
+            // 
+            this.label38.AutoSize = true;
+            this.label38.Location = new System.Drawing.Point(46, 402);
+            this.label38.Name = "label38";
+            this.label38.Size = new System.Drawing.Size(37, 13);
+            this.label38.TabIndex = 31;
+            this.label38.Text = "Sens2";
+            // 
+            // tbarSensor1
+            // 
+            this.tbarSensor1.AutoSize = false;
+            this.tbarSensor1.BackColor = System.Drawing.Color.MediumSpringGreen;
+            this.tbarSensor1.Location = new System.Drawing.Point(10, 246);
+            this.tbarSensor1.Maximum = 1024;
+            this.tbarSensor1.Name = "tbarSensor1";
+            this.tbarSensor1.Orientation = System.Windows.Forms.Orientation.Vertical;
+            this.tbarSensor1.Size = new System.Drawing.Size(16, 153);
+            this.tbarSensor1.TabIndex = 26;
+            this.tbarSensor1.TickFrequency = 100;
+            this.tbarSensor1.TickStyle = System.Windows.Forms.TickStyle.None;
+            // 
+            // tbSensor4
+            // 
+            this.tbSensor4.Location = new System.Drawing.Point(141, 417);
+            this.tbSensor4.Name = "tbSensor4";
+            this.tbSensor4.Size = new System.Drawing.Size(35, 20);
+            this.tbSensor4.TabIndex = 32;
+            this.tbSensor4.Text = "0000";
             // 
             // EscapeButton
             // 
-            this.EscapeButton.Location = new System.Drawing.Point(846, 430);
+            this.EscapeButton.Location = new System.Drawing.Point(292, 394);
             this.EscapeButton.Name = "EscapeButton";
             this.EscapeButton.Size = new System.Drawing.Size(66, 28);
             this.EscapeButton.TabIndex = 1;
@@ -572,29 +1148,44 @@
             // 
             // MenuListBox
             // 
+            this.MenuListBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.MenuListBox.BackColor = System.Drawing.SystemColors.Info;
-            this.MenuListBox.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.MenuListBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.MenuListBox.FormattingEnabled = true;
             this.MenuListBox.ItemHeight = 16;
-            this.MenuListBox.Location = new System.Drawing.Point(3, 29);
+            this.MenuListBox.Location = new System.Drawing.Point(3, 14);
             this.MenuListBox.Name = "MenuListBox";
-            this.MenuListBox.Size = new System.Drawing.Size(917, 436);
-            this.MenuListBox.TabIndex = 0;
+            this.MenuListBox.Size = new System.Drawing.Size(363, 452);
+            this.MenuListBox.TabIndex = 24;
             this.MenuListBox.SelectedIndexChanged += new System.EventHandler(this.MenuListBox_SelectedIndexChanged);
             this.MenuListBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.MenuListBox_KeyDown);
             this.MenuListBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.MenuListBox_KeyPress);
             this.MenuListBox.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.MenuListBox_MouseDoubleClick);
+            // 
+            // LMenuTitle
+            // 
+            this.LMenuTitle.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.LMenuTitle.BackColor = System.Drawing.SystemColors.Menu;
+            this.LMenuTitle.ImageAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.LMenuTitle.Location = new System.Drawing.Point(3, 3);
+            this.LMenuTitle.Name = "LMenuTitle";
+            this.LMenuTitle.Size = new System.Drawing.Size(363, 15);
+            this.LMenuTitle.TabIndex = 9;
+            this.LMenuTitle.Text = "Menu Title";
+            this.LMenuTitle.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
             // tabControl1
             // 
             this.tabControl1.Controls.Add(this.tabMenuPage);
             this.tabControl1.Controls.Add(this.tabMemoryPage);
             this.tabControl1.Controls.Add(this.tpServo);
+            this.tabControl1.Controls.Add(this.tpStatus);
             this.tabControl1.Location = new System.Drawing.Point(2, -1);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(931, 494);
+            this.tabControl1.Size = new System.Drawing.Size(776, 494);
             this.tabControl1.TabIndex = 0;
             this.tabControl1.SelectedIndexChanged += new System.EventHandler(this.tabControl1_SelectedIndexChanged);
             // 
@@ -609,7 +1200,7 @@
             this.tpServo.Location = new System.Drawing.Point(4, 22);
             this.tpServo.Name = "tpServo";
             this.tpServo.Padding = new System.Windows.Forms.Padding(3);
-            this.tpServo.Size = new System.Drawing.Size(923, 468);
+            this.tpServo.Size = new System.Drawing.Size(768, 468);
             this.tpServo.TabIndex = 4;
             this.tpServo.Text = "Servo";
             // 
@@ -618,20 +1209,7 @@
             this.groupBox21.BackColor = System.Drawing.Color.PowderBlue;
             this.groupBox21.Controls.Add(this.button1);
             this.groupBox21.Controls.Add(this.cbPinWave);
-            this.groupBox21.Controls.Add(this.tbSensor2);
             this.groupBox21.Controls.Add(this.cbServoDirect);
-            this.groupBox21.Controls.Add(this.label37);
-            this.groupBox21.Controls.Add(this.tbSensor1);
-            this.groupBox21.Controls.Add(this.tbSensor3);
-            this.groupBox21.Controls.Add(this.tbarSensor1);
-            this.groupBox21.Controls.Add(this.label38);
-            this.groupBox21.Controls.Add(this.tbSensor4);
-            this.groupBox21.Controls.Add(this.tbarSensor2);
-            this.groupBox21.Controls.Add(this.label39);
-            this.groupBox21.Controls.Add(this.label40);
-            this.groupBox21.Controls.Add(this.tbarSensor3);
-            this.groupBox21.Controls.Add(this.tbarSensor4);
-            this.groupBox21.Controls.Add(this.cbSensorUpdate);
             this.groupBox21.Location = new System.Drawing.Point(686, 4);
             this.groupBox21.Name = "groupBox21";
             this.groupBox21.Size = new System.Drawing.Size(219, 394);
@@ -639,125 +1217,35 @@
             this.groupBox21.TabStop = false;
             this.groupBox21.Text = "Servo 4";
             // 
-            // tbSensor2
+            // button1
             // 
-            this.tbSensor2.Location = new System.Drawing.Point(85, 181);
-            this.tbSensor2.Name = "tbSensor2";
-            this.tbSensor2.Size = new System.Drawing.Size(40, 20);
-            this.tbSensor2.TabIndex = 22;
-            this.tbSensor2.Text = "0000";
+            this.button1.Location = new System.Drawing.Point(115, 365);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(96, 23);
+            this.button1.TabIndex = 19;
+            this.button1.Text = "Demo Toggle";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click_1);
             // 
-            // label37
+            // cbPinWave
             // 
-            this.label37.AutoSize = true;
-            this.label37.Location = new System.Drawing.Point(36, 165);
-            this.label37.Name = "label37";
-            this.label37.Size = new System.Drawing.Size(46, 13);
-            this.label37.TabIndex = 13;
-            this.label37.Text = "Sensor1";
+            this.cbPinWave.AutoSize = true;
+            this.cbPinWave.Location = new System.Drawing.Point(117, 331);
+            this.cbPinWave.Name = "cbPinWave";
+            this.cbPinWave.Size = new System.Drawing.Size(73, 17);
+            this.cbPinWave.TabIndex = 231;
+            this.cbPinWave.Text = "Pin Wave";
+            this.cbPinWave.UseVisualStyleBackColor = true;
             // 
-            // tbSensor1
+            // cbServoDirect
             // 
-            this.tbSensor1.Location = new System.Drawing.Point(42, 180);
-            this.tbSensor1.Name = "tbSensor1";
-            this.tbSensor1.Size = new System.Drawing.Size(36, 20);
-            this.tbSensor1.TabIndex = 21;
-            this.tbSensor1.Text = "0000";
-            // 
-            // tbSensor3
-            // 
-            this.tbSensor3.Location = new System.Drawing.Point(135, 182);
-            this.tbSensor3.Name = "tbSensor3";
-            this.tbSensor3.Size = new System.Drawing.Size(35, 20);
-            this.tbSensor3.TabIndex = 19;
-            this.tbSensor3.Text = "0000";
-            // 
-            // tbarSensor1
-            // 
-            this.tbarSensor1.AutoSize = false;
-            this.tbarSensor1.BackColor = System.Drawing.Color.MediumSpringGreen;
-            this.tbarSensor1.Location = new System.Drawing.Point(53, 10);
-            this.tbarSensor1.Maximum = 1024;
-            this.tbarSensor1.Name = "tbarSensor1";
-            this.tbarSensor1.Orientation = System.Windows.Forms.Orientation.Vertical;
-            this.tbarSensor1.Size = new System.Drawing.Size(16, 153);
-            this.tbarSensor1.TabIndex = 0;
-            this.tbarSensor1.TickFrequency = 100;
-            this.tbarSensor1.TickStyle = System.Windows.Forms.TickStyle.None;
-            // 
-            // label38
-            // 
-            this.label38.AutoSize = true;
-            this.label38.Location = new System.Drawing.Point(79, 168);
-            this.label38.Name = "label38";
-            this.label38.Size = new System.Drawing.Size(46, 13);
-            this.label38.TabIndex = 13;
-            this.label38.Text = "Sensor2";
-            // 
-            // tbSensor4
-            // 
-            this.tbSensor4.Location = new System.Drawing.Point(180, 180);
-            this.tbSensor4.Name = "tbSensor4";
-            this.tbSensor4.Size = new System.Drawing.Size(35, 20);
-            this.tbSensor4.TabIndex = 18;
-            this.tbSensor4.Text = "0000";
-            // 
-            // tbarSensor2
-            // 
-            this.tbarSensor2.AutoSize = false;
-            this.tbarSensor2.BackColor = System.Drawing.Color.MediumSpringGreen;
-            this.tbarSensor2.Location = new System.Drawing.Point(95, 11);
-            this.tbarSensor2.Maximum = 1024;
-            this.tbarSensor2.Name = "tbarSensor2";
-            this.tbarSensor2.Orientation = System.Windows.Forms.Orientation.Vertical;
-            this.tbarSensor2.Size = new System.Drawing.Size(16, 153);
-            this.tbarSensor2.TabIndex = 0;
-            this.tbarSensor2.TickFrequency = 100;
-            this.tbarSensor2.TickStyle = System.Windows.Forms.TickStyle.None;
-            // 
-            // label39
-            // 
-            this.label39.AutoSize = true;
-            this.label39.Location = new System.Drawing.Point(124, 166);
-            this.label39.Name = "label39";
-            this.label39.Size = new System.Drawing.Size(46, 13);
-            this.label39.TabIndex = 13;
-            this.label39.Text = "Sensor3";
-            // 
-            // label40
-            // 
-            this.label40.AutoSize = true;
-            this.label40.Location = new System.Drawing.Point(172, 164);
-            this.label40.Name = "label40";
-            this.label40.Size = new System.Drawing.Size(46, 13);
-            this.label40.TabIndex = 13;
-            this.label40.Text = "Sensor4";
-            // 
-            // tbarSensor3
-            // 
-            this.tbarSensor3.AutoSize = false;
-            this.tbarSensor3.BackColor = System.Drawing.Color.MediumSpringGreen;
-            this.tbarSensor3.Location = new System.Drawing.Point(148, 10);
-            this.tbarSensor3.Maximum = 1024;
-            this.tbarSensor3.Name = "tbarSensor3";
-            this.tbarSensor3.Orientation = System.Windows.Forms.Orientation.Vertical;
-            this.tbarSensor3.Size = new System.Drawing.Size(16, 153);
-            this.tbarSensor3.TabIndex = 0;
-            this.tbarSensor3.TickFrequency = 100;
-            this.tbarSensor3.TickStyle = System.Windows.Forms.TickStyle.None;
-            // 
-            // tbarSensor4
-            // 
-            this.tbarSensor4.AutoSize = false;
-            this.tbarSensor4.BackColor = System.Drawing.Color.MediumSpringGreen;
-            this.tbarSensor4.Location = new System.Drawing.Point(197, 10);
-            this.tbarSensor4.Maximum = 1024;
-            this.tbarSensor4.Name = "tbarSensor4";
-            this.tbarSensor4.Orientation = System.Windows.Forms.Orientation.Vertical;
-            this.tbarSensor4.Size = new System.Drawing.Size(16, 153);
-            this.tbarSensor4.TabIndex = 0;
-            this.tbarSensor4.TickFrequency = 100;
-            this.tbarSensor4.TickStyle = System.Windows.Forms.TickStyle.None;
+            this.cbServoDirect.AutoSize = true;
+            this.cbServoDirect.Location = new System.Drawing.Point(117, 313);
+            this.cbServoDirect.Name = "cbServoDirect";
+            this.cbServoDirect.Size = new System.Drawing.Size(73, 17);
+            this.cbServoDirect.TabIndex = 18;
+            this.cbServoDirect.Text = "Direct Set";
+            this.cbServoDirect.UseVisualStyleBackColor = true;
             // 
             // groupBox17
             // 
@@ -2781,16 +3269,6 @@
             this.groupBox7.TabStop = false;
             this.groupBox7.Text = "Arduino Servos ";
             // 
-            // cbPinWave
-            // 
-            this.cbPinWave.AutoSize = true;
-            this.cbPinWave.Location = new System.Drawing.Point(117, 331);
-            this.cbPinWave.Name = "cbPinWave";
-            this.cbPinWave.Size = new System.Drawing.Size(73, 17);
-            this.cbPinWave.TabIndex = 231;
-            this.cbPinWave.Text = "Pin Wave";
-            this.cbPinWave.UseVisualStyleBackColor = true;
-            // 
             // cbVal8
             // 
             this.cbVal8.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -3114,21 +3592,7 @@
             // groupBox13
             // 
             this.groupBox13.BackColor = System.Drawing.Color.LightBlue;
-            this.groupBox13.Controls.Add(this.label47);
-            this.groupBox13.Controls.Add(this.tbS2Period);
-            this.groupBox13.Controls.Add(this.label46);
-            this.groupBox13.Controls.Add(this.tbInfl1);
-            this.groupBox13.Controls.Add(this.label45);
-            this.groupBox13.Controls.Add(this.tbS2Steps);
-            this.groupBox13.Controls.Add(this.label44);
-            this.groupBox13.Controls.Add(this.tbS1Steps);
-            this.groupBox13.Controls.Add(this.label43);
-            this.groupBox13.Controls.Add(this.cbLim1);
-            this.groupBox13.Controls.Add(this.cbLim4);
-            this.groupBox13.Controls.Add(this.cbLim2);
-            this.groupBox13.Controls.Add(this.cbLim3);
             this.groupBox13.Controls.Add(this.label42);
-            this.groupBox13.Controls.Add(this.cbSwitch1);
             this.groupBox13.Controls.Add(this.bFire);
             this.groupBox13.Controls.Add(this.bDisableAll);
             this.groupBox13.Controls.Add(this.groupBox9);
@@ -3138,119 +3602,6 @@
             this.groupBox13.TabIndex = 11;
             this.groupBox13.TabStop = false;
             // 
-            // label47
-            // 
-            this.label47.AutoSize = true;
-            this.label47.Location = new System.Drawing.Point(554, 35);
-            this.label47.Name = "label47";
-            this.label47.Size = new System.Drawing.Size(50, 13);
-            this.label47.TabIndex = 34;
-            this.label47.Text = "S2Period";
-            // 
-            // tbS2Period
-            // 
-            this.tbS2Period.Location = new System.Drawing.Point(547, 10);
-            this.tbS2Period.Name = "tbS2Period";
-            this.tbS2Period.Size = new System.Drawing.Size(56, 20);
-            this.tbS2Period.TabIndex = 33;
-            // 
-            // label46
-            // 
-            this.label46.AutoSize = true;
-            this.label46.Location = new System.Drawing.Point(490, 34);
-            this.label46.Name = "label46";
-            this.label46.Size = new System.Drawing.Size(27, 13);
-            this.label46.TabIndex = 32;
-            this.label46.Text = "Infl1";
-            // 
-            // tbInfl1
-            // 
-            this.tbInfl1.Location = new System.Drawing.Point(484, 10);
-            this.tbInfl1.Name = "tbInfl1";
-            this.tbInfl1.Size = new System.Drawing.Size(56, 20);
-            this.tbInfl1.TabIndex = 31;
-            // 
-            // label45
-            // 
-            this.label45.AutoSize = true;
-            this.label45.Location = new System.Drawing.Point(422, 37);
-            this.label45.Name = "label45";
-            this.label45.Size = new System.Drawing.Size(47, 13);
-            this.label45.TabIndex = 30;
-            this.label45.Text = "S2Steps";
-            // 
-            // tbS2Steps
-            // 
-            this.tbS2Steps.Location = new System.Drawing.Point(420, 11);
-            this.tbS2Steps.Name = "tbS2Steps";
-            this.tbS2Steps.Size = new System.Drawing.Size(58, 20);
-            this.tbS2Steps.TabIndex = 29;
-            // 
-            // label44
-            // 
-            this.label44.AutoSize = true;
-            this.label44.Location = new System.Drawing.Point(364, 38);
-            this.label44.Name = "label44";
-            this.label44.Size = new System.Drawing.Size(47, 13);
-            this.label44.TabIndex = 28;
-            this.label44.Text = "S1Steps";
-            // 
-            // tbS1Steps
-            // 
-            this.tbS1Steps.Location = new System.Drawing.Point(361, 11);
-            this.tbS1Steps.Name = "tbS1Steps";
-            this.tbS1Steps.Size = new System.Drawing.Size(52, 20);
-            this.tbS1Steps.TabIndex = 27;
-            // 
-            // label43
-            // 
-            this.label43.AutoSize = true;
-            this.label43.Location = new System.Drawing.Point(620, 41);
-            this.label43.Name = "label43";
-            this.label43.Size = new System.Drawing.Size(33, 13);
-            this.label43.TabIndex = 26;
-            this.label43.Text = "Limits";
-            // 
-            // cbLim1
-            // 
-            this.cbLim1.AutoSize = true;
-            this.cbLim1.Location = new System.Drawing.Point(611, 8);
-            this.cbLim1.Name = "cbLim1";
-            this.cbLim1.Size = new System.Drawing.Size(32, 17);
-            this.cbLim1.TabIndex = 22;
-            this.cbLim1.Text = "1";
-            this.cbLim1.UseVisualStyleBackColor = true;
-            // 
-            // cbLim4
-            // 
-            this.cbLim4.AutoSize = true;
-            this.cbLim4.Location = new System.Drawing.Point(649, 23);
-            this.cbLim4.Name = "cbLim4";
-            this.cbLim4.Size = new System.Drawing.Size(32, 17);
-            this.cbLim4.TabIndex = 25;
-            this.cbLim4.Text = "4";
-            this.cbLim4.UseVisualStyleBackColor = true;
-            // 
-            // cbLim2
-            // 
-            this.cbLim2.AutoSize = true;
-            this.cbLim2.Location = new System.Drawing.Point(611, 23);
-            this.cbLim2.Name = "cbLim2";
-            this.cbLim2.Size = new System.Drawing.Size(32, 17);
-            this.cbLim2.TabIndex = 23;
-            this.cbLim2.Text = "2";
-            this.cbLim2.UseVisualStyleBackColor = true;
-            // 
-            // cbLim3
-            // 
-            this.cbLim3.AutoSize = true;
-            this.cbLim3.Location = new System.Drawing.Point(649, 8);
-            this.cbLim3.Name = "cbLim3";
-            this.cbLim3.Size = new System.Drawing.Size(32, 17);
-            this.cbLim3.TabIndex = 24;
-            this.cbLim3.Text = "3";
-            this.cbLim3.UseVisualStyleBackColor = true;
-            // 
             // label42
             // 
             this.label42.AutoSize = true;
@@ -3259,16 +3610,6 @@
             this.label42.Size = new System.Drawing.Size(28, 13);
             this.label42.TabIndex = 21;
             this.label42.Text = "0-15";
-            // 
-            // cbSwitch1
-            // 
-            this.cbSwitch1.AutoSize = true;
-            this.cbSwitch1.Location = new System.Drawing.Point(690, 8);
-            this.cbSwitch1.Name = "cbSwitch1";
-            this.cbSwitch1.Size = new System.Drawing.Size(64, 17);
-            this.cbSwitch1.TabIndex = 13;
-            this.cbSwitch1.Text = "Switch1";
-            this.cbSwitch1.UseVisualStyleBackColor = true;
             // 
             // bFire
             // 
@@ -3306,26 +3647,6 @@
             this.groupBox9.TabIndex = 7;
             this.groupBox9.TabStop = false;
             this.groupBox9.Text = "Cycling Servos";
-            // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(115, 365);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(96, 23);
-            this.button1.TabIndex = 19;
-            this.button1.Text = "Demo Toggle";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click_1);
-            // 
-            // cbServoDirect
-            // 
-            this.cbServoDirect.AutoSize = true;
-            this.cbServoDirect.Location = new System.Drawing.Point(117, 313);
-            this.cbServoDirect.Name = "cbServoDirect";
-            this.cbServoDirect.Size = new System.Drawing.Size(73, 17);
-            this.cbServoDirect.TabIndex = 18;
-            this.cbServoDirect.Text = "Direct Set";
-            this.cbServoDirect.UseVisualStyleBackColor = true;
             // 
             // label53
             // 
@@ -3382,16 +3703,15 @@
             this.cb0.UseVisualStyleBackColor = true;
             this.cb0.CheckedChanged += new System.EventHandler(this.cb0_CheckedChanged);
             // 
-            // cbSensorUpdate
+            // tpStatus
             // 
-            this.cbSensorUpdate.AutoSize = true;
-            this.cbSensorUpdate.Location = new System.Drawing.Point(117, 293);
-            this.cbSensorUpdate.Name = "cbSensorUpdate";
-            this.cbSensorUpdate.Size = new System.Drawing.Size(94, 17);
-            this.cbSensorUpdate.TabIndex = 12;
-            this.cbSensorUpdate.Text = "SensorUpdate";
-            this.cbSensorUpdate.UseVisualStyleBackColor = true;
-            this.cbSensorUpdate.CheckedChanged += new System.EventHandler(this.cbSensorUpdate_CheckedChanged);
+            this.tpStatus.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.tpStatus.Location = new System.Drawing.Point(4, 22);
+            this.tpStatus.Name = "tpStatus";
+            this.tpStatus.Padding = new System.Windows.Forms.Padding(3);
+            this.tpStatus.Size = new System.Drawing.Size(768, 468);
+            this.tpStatus.TabIndex = 5;
+            this.tpStatus.Text = "Status";
             // 
             // groupBox1
             // 
@@ -3418,16 +3738,6 @@
             this.nudCurrentChannel.TabIndex = 5;
             this.nudCurrentChannel.ValueChanged += new System.EventHandler(this.nudCurrentChannel_ValueChanged);
             // 
-            // bDisconnect
-            // 
-            this.bDisconnect.Location = new System.Drawing.Point(97, 38);
-            this.bDisconnect.Name = "bDisconnect";
-            this.bDisconnect.Size = new System.Drawing.Size(53, 23);
-            this.bDisconnect.TabIndex = 3;
-            this.bDisconnect.Text = "Close";
-            this.bDisconnect.UseVisualStyleBackColor = true;
-            this.bDisconnect.Click += new System.EventHandler(this.bDisconnect_Click);
-            // 
             // rbSerial
             // 
             this.rbSerial.AutoCheck = false;
@@ -3453,6 +3763,16 @@
             this.rbUSB.Text = "USB";
             this.rbUSB.UseVisualStyleBackColor = true;
             this.rbUSB.CheckedChanged += new System.EventHandler(this.rbUSB_CheckedChanged);
+            // 
+            // bDisconnect
+            // 
+            this.bDisconnect.Location = new System.Drawing.Point(97, 38);
+            this.bDisconnect.Name = "bDisconnect";
+            this.bDisconnect.Size = new System.Drawing.Size(53, 23);
+            this.bDisconnect.TabIndex = 3;
+            this.bDisconnect.Text = "Close";
+            this.bDisconnect.UseVisualStyleBackColor = true;
+            this.bDisconnect.Click += new System.EventHandler(this.bDisconnect_Click);
             // 
             // groupBox2
             // 
@@ -3548,9 +3868,9 @@
             // 
             // rtbMessageBuff
             // 
-            this.rtbMessageBuff.Location = new System.Drawing.Point(934, -1);
+            this.rtbMessageBuff.Location = new System.Drawing.Point(784, -2);
             this.rtbMessageBuff.Name = "rtbMessageBuff";
-            this.rtbMessageBuff.Size = new System.Drawing.Size(302, 490);
+            this.rtbMessageBuff.Size = new System.Drawing.Size(446, 488);
             this.rtbMessageBuff.TabIndex = 13;
             this.rtbMessageBuff.Text = "";
             // 
@@ -3649,7 +3969,8 @@
             this.AcceptButton = this.MyAcceptButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1242, 578);
+            this.ClientSize = new System.Drawing.Size(1279, 608);
+            this.Controls.Add(this.button2);
             this.Controls.Add(this.button7);
             this.Controls.Add(this.button6);
             this.Controls.Add(this.button5);
@@ -3672,18 +3993,24 @@
             this.Controls.Add(this.tabControl1);
             this.Name = "Form1";
             this.Text = "Form1";
-            this.Load += new System.EventHandler(this.Form1_Load);
             this.tabMemoryPage.ResumeLayout(false);
             this.tabMemoryPage.PerformLayout();
             this.tabMenuPage.ResumeLayout(false);
+            this.groupBox4.ResumeLayout(false);
+            this.groupBox4.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudSteps)).EndInit();
+            this.groupBox5.ResumeLayout(false);
+            this.groupBox5.PerformLayout();
+            this.groupBox3.ResumeLayout(false);
+            this.groupBox3.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.tbarSensor4)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tbarSensor3)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tbarSensor2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tbarSensor1)).EndInit();
             this.tabControl1.ResumeLayout(false);
             this.tpServo.ResumeLayout(false);
             this.groupBox21.ResumeLayout(false);
             this.groupBox21.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.tbarSensor1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.tbarSensor2)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.tbarSensor3)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.tbarSensor4)).EndInit();
             this.groupBox17.ResumeLayout(false);
             this.groupBox17.PerformLayout();
             this.groupBox10.ResumeLayout(false);
@@ -3735,7 +4062,6 @@
         private System.Windows.Forms.TabPage tabMenuPage;
         private System.Windows.Forms.Label LMenuTitle;
         private System.Windows.Forms.Button EscapeButton;
-        private System.Windows.Forms.ListBox MenuListBox;
         private System.Windows.Forms.TabControl tabControl1;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.RadioButton rbSerial;
@@ -3764,40 +4090,13 @@
         private System.Windows.Forms.Button bMessageBufferClear;
         private System.Windows.Forms.CheckBox cb0;
         private System.Windows.Forms.TrackBar tbar1;
-        private System.Windows.Forms.Label label40;
-        private System.Windows.Forms.Label label39;
-        private System.Windows.Forms.Label label38;
-        private System.Windows.Forms.Label label37;
-        private System.Windows.Forms.CheckBox cbSensorUpdate;
-        private System.Windows.Forms.TrackBar tbarSensor4;
-        private System.Windows.Forms.TrackBar tbarSensor3;
-        private System.Windows.Forms.TrackBar tbarSensor2;
-        private System.Windows.Forms.TrackBar tbarSensor1;
         private System.Windows.Forms.Button bFire;
-        private System.Windows.Forms.CheckBox cbSwitch1;
         private System.Windows.Forms.Label ProgBarLabel;
-        private System.Windows.Forms.TextBox tbSensor4;
-        private System.Windows.Forms.TextBox tbSensor3;
-        private System.Windows.Forms.TextBox tbSensor1;
-        private System.Windows.Forms.Label label45;
-        private System.Windows.Forms.TextBox tbS2Steps;
-        private System.Windows.Forms.Label label44;
-        private System.Windows.Forms.TextBox tbS1Steps;
-        private System.Windows.Forms.Label label43;
-        private System.Windows.Forms.CheckBox cbLim1;
-        private System.Windows.Forms.CheckBox cbLim4;
-        private System.Windows.Forms.CheckBox cbLim2;
-        private System.Windows.Forms.CheckBox cbLim3;
-        private System.Windows.Forms.Label label47;
-        private System.Windows.Forms.TextBox tbS2Period;
-        private System.Windows.Forms.Label label46;
-        private System.Windows.Forms.TextBox tbInfl1;
         private System.Windows.Forms.NumericUpDown nudBoardAddress;
         private System.Windows.Forms.Label label48;
         private System.Windows.Forms.Button button5;
         private System.Windows.Forms.Button button6;
         private System.Windows.Forms.Button button7;
-        private System.Windows.Forms.TextBox tbSensor2;
         private System.Windows.Forms.CheckBox cbS01;
         private System.Windows.Forms.CheckBox cbS02;
         private System.Windows.Forms.CheckBox cbS03;
@@ -4034,5 +4333,59 @@
         private System.Windows.Forms.TextBox cbVal2;
         private System.Windows.Forms.TextBox cbVal1;
         private System.Windows.Forms.CheckBox cbPinWave;
+        private System.Windows.Forms.TabPage tpStatus;
+        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.ListBox MenuListBox;
+        private System.Windows.Forms.GroupBox groupBox4;
+        private System.Windows.Forms.GroupBox groupBox3;
+        private System.Windows.Forms.CheckBox cbLim1;
+        private System.Windows.Forms.CheckBox cbSwitch1;
+        private System.Windows.Forms.CheckBox cbLim4;
+        private System.Windows.Forms.CheckBox cbLim2;
+        private System.Windows.Forms.CheckBox cbLim3;
+        private System.Windows.Forms.CheckBox cbSensorUpdate;
+        private System.Windows.Forms.TextBox tbSensor2;
+        private System.Windows.Forms.Label label39;
+        private System.Windows.Forms.TrackBar tbarSensor4;
+        private System.Windows.Forms.Label label37;
+        private System.Windows.Forms.TextBox tbSensor1;
+        private System.Windows.Forms.TrackBar tbarSensor3;
+        private System.Windows.Forms.TextBox tbSensor3;
+        private System.Windows.Forms.Label label40;
+        private System.Windows.Forms.TrackBar tbarSensor2;
+        private System.Windows.Forms.Label label38;
+        private System.Windows.Forms.TrackBar tbarSensor1;
+        private System.Windows.Forms.TextBox tbSensor4;
+        private System.Windows.Forms.GroupBox groupBox5;
+        private System.Windows.Forms.RadioButton rbP4;
+        private System.Windows.Forms.RadioButton rbP3;
+        private System.Windows.Forms.RadioButton rbP2;
+        private System.Windows.Forms.RadioButton rbP1;
+        private System.Windows.Forms.Label label47;
+        private System.Windows.Forms.TextBox tbS4;
+        private System.Windows.Forms.Label label46;
+        private System.Windows.Forms.TextBox tbS3;
+        private System.Windows.Forms.Label label45;
+        private System.Windows.Forms.TextBox tbS2;
+        private System.Windows.Forms.Label label44;
+        private System.Windows.Forms.TextBox tbS1;
+        private System.Windows.Forms.NumericUpDown nudSteps;
+        private System.Windows.Forms.Button bMovS3;
+        private System.Windows.Forms.Button bMovS2;
+        private System.Windows.Forms.Button bMovS1;
+        private System.Windows.Forms.Button bMovS4;
+        private System.Windows.Forms.Button bHome;
+        private System.Windows.Forms.Button bStopCycle;
+        private System.Windows.Forms.Button bStartCycle;
+        private System.Windows.Forms.Button button12;
+        private System.Windows.Forms.Button bStopCycle4;
+        private System.Windows.Forms.Button bStartCycle4;
+        private System.Windows.Forms.Button bHome4;
+        private System.Windows.Forms.Button bStopCycle3;
+        private System.Windows.Forms.Button bStartCycle3;
+        private System.Windows.Forms.Button bHome2;
+        private System.Windows.Forms.Button bStopCycle2;
+        private System.Windows.Forms.Button bStartCycle2;
+        private System.Windows.Forms.Button bHome3;
     }
 }

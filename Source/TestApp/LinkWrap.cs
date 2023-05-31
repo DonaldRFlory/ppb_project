@@ -37,22 +37,29 @@ namespace TestApp
 		public const U16 RTNVAL					= 2;
 		public const U16 RTNVAL2				= 4;
 		public const U16 MEN_STARTUP			= 64;
-		
+
 		//Constants relating to standard link functions
 		public const U16 RESTART_MAGIC_ONE 		= 0xA5A5;
 		public const U16 RESTART_MAGIC_TWO 		= 0x1234;
 		public const U32 SSP_CS_START				= 1002;
 		public const U32 SSP_CS_END					= 1003;
 		public const U32 SSP_CS_CALC				= 1004;
-	
+
 		//HID related defines
 //		public const U16 BIORAD_VID				= 0x0614;
 //		public const U16 FRACTION_COLLECTOR_PID	= 0x040E;
 		public const U16 OUR_VID				= 0x0614;
 		public const U16 OUR_PID	= 0x040E;
-		
 
-		enum SLAVE_PARAMS {SPAR_PROGVERSION = 0, SPAR_MSECS = 6}; //from slavparm.h
+
+		enum SLAVE_PARAMS {SPAR_PROGVERSION = 0, SPAR_MSECS = 6,
+		                    SPAR_PARS1 = 22, SPAR_PARS2 = 23,
+		                    SPAR_PARS3 = 24, SPAR_PARS4 = 25,
+		                    SPAR_RESET_STEP_POS = 34,
+		                    SPAR_HOME_STEPPER        = 35,
+		                    SPAR_CYCLE_STEPPER       = 36,
+		                    SPAR_STOP_STEPPER_CYCLE  = 37
+		                    }; //from slavparm.h
 		public enum API_RSLT:int {
   								LINK_RSLT_OK = 0, OK=0, PARAM_OUT_OF_RANGE, RET_VALUE_OUT_OF_RANGE,
 								FW_FILE_DATA_CRC_ERROR, MAIN_FW_KEY_ERASE_ERROR, FW_UPGRADE_ERROR,
@@ -63,11 +70,10 @@ namespace TestApp
 								DEVICE_HANDLE_INVALID, INVALID_NO_OF_ACTIVE_FC_DEVICES, MORE_THEN_ONE_DEVICE_CONNECTED,
 								FW_COMPONENT_NOT_FOUND, FW_COMPONENT_BAD_PID, FW_COMPONENT_BAD,
 								FW_WITH_BOOT_LOADER_ONLY, BAD_API_HANDLE
-							
+
 						   };
 
 //End Lead-in code file LWPart1.CS ---------------------------
-
 		private U8 MasterBlockDown(DOWN_PTR_U8[] SrcPtr, U8 Count, U16 DestAddress)
 		{
 			return LINK.MasterBlockDown(CMgr.CurHandle(), SrcPtr, Count, DestAddress);

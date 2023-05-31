@@ -45,6 +45,10 @@
 #define SPAR_SEG_STEP             31
 #define SPAR_TRACE_TEST           32
 #define SPAR_ROT_RPM_X1000        33
+#define SPAR_RESET_STEP_POS       34
+#define SPAR_HOME_STEPPER         35
+#define SPAR_CYCLE_STEPPER        36
+#define SPAR_STOP_STEPPER_CYCLE   37
 
 //unsigned long GetMiscCounts(unsigned short Index);
 //void SetMiscCounts(unsigned short ParOne, unsigned short ParTwo);
