@@ -743,10 +743,10 @@ namespace TestApp
            cbLim2.Checked = (InputVals[4] & 4) != 0;
            cbLim3.Checked = (InputVals[4] & 8) != 0;
            cbLim4.Checked = (InputVals[4] & 16) != 0;
-           tbS1Steps.Text = InputVals[5].ToString();
-           tbS2Steps.Text = InputVals[6].ToString();
-           tbInfl1.Text  = InputVals[7].ToString();
-           tbS2Period.Text = InputVals[8].ToString();
+           tbS1.Text = InputVals[5].ToString();
+           tbS2.Text = InputVals[6].ToString();
+           tbS3.Text  = InputVals[7].ToString();
+           tbS4.Text = InputVals[8].ToString();
         }
 
         private void InitServoTab()

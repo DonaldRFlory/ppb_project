@@ -1726,8 +1726,170 @@ namespace TestApp
             cbVal8.Text = Temp.ToString();
         }
 
-        private void Form1_Load(object sender, EventArgs e)
+    
+
+        private void rbP1_CheckedChanged(object sender, EventArgs e)
         {
+            if (rbP1.Checked)
+            {
+                SetSlaveParameter((byte)SLAVE_PARAMS.SPAR_PARS1, 0, 0);
+                rbP2.Checked = rbP3.Checked = rbP4.Checked = false;
+            }
+
         }
+
+        private void rbP2_CheckedChanged(object sender, EventArgs e)
+        {
+            if (rbP2.Checked)
+            {
+                SetSlaveParameter((byte)SLAVE_PARAMS.SPAR_PARS2, 0, 0);
+                rbP1.Checked = rbP3.Checked = rbP4.Checked = false;
+            }
+
+        }
+
+        private void rbP3_CheckedChanged(object sender, EventArgs e)
+        {
+            if (rbP3.Checked)
+            {
+                SetSlaveParameter((byte)SLAVE_PARAMS.SPAR_PARS3, 0, 0);
+                rbP1.Checked = rbP2.Checked = rbP4.Checked = false;
+            }
+
+        }
+
+        private void rbP4_CheckedChanged(object sender, EventArgs e)
+        {
+            if (rbP4.Checked)
+            {
+                SetSlaveParameter((byte)SLAVE_PARAMS.SPAR_PARS4, 0, 0);
+                rbP1.Checked = rbP2.Checked = rbP3.Checked = false;
+            }
+        }
+
+        private void bMovS1_Click(object sender, EventArgs e)
+        {
+            int Steps;
+            Steps = Convert.ToInt32(nudSteps.Value);
+            if (Steps < 0)
+            {
+                SetStep(0, 1000, (U16)(-Steps), 2);
+
+            }
+            else
+            {
+                SetStep(0, 1000, (U16)Steps, 3);
+            }
+        }
+
+        private void bMovS2_Click(object sender, EventArgs e)
+        {
+            int Steps;
+            Steps = Convert.ToInt32(nudSteps.Value);
+            if (Steps < 0)
+            {
+                SetStep(1, 1000, (U16)(-Steps), 2);
+
+            }
+            else
+            {
+                SetStep(1, 1000, (U16)Steps, 3);
+            }
+        }
+
+        private void bMovS3_Click(object sender, EventArgs e)
+        {
+
+            int Steps;
+            Steps = Convert.ToInt32(nudSteps.Value);
+            if (Steps < 0)
+            {
+                SetStep(2, 1000, (U16)(-Steps), 2);
+
+            }
+            else
+            {
+                SetStep(2, 1000, (U16)Steps, 3);
+            }
+        }
+
+        private void bStartCycle_Click(object sender, EventArgs e)
+        {
+            SetSlaveParameter((U8)SLAVE_PARAMS.SPAR_CYCLE_STEPPER, 0, 0);
+        }
+
+        private void bStopCycle_Click(object sender, EventArgs e)
+        {
+            SetSlaveParameter((U8)SLAVE_PARAMS.SPAR_STOP_STEPPER_CYCLE, 0, 0);
+        }
+
+        private void bHome_Click(object sender, EventArgs e)
+        {
+            SetSlaveParameter((U8)SLAVE_PARAMS.SPAR_HOME_STEPPER, 0, 0);
+        }
+
+        private void bStartCycle2_Click(object sender, EventArgs e)
+        {
+            SetSlaveParameter((U8)SLAVE_PARAMS.SPAR_CYCLE_STEPPER, 1, 0);
+        }
+
+        private void bStopCycle2_Click(object sender, EventArgs e)
+        {
+            SetSlaveParameter((U8)SLAVE_PARAMS.SPAR_STOP_STEPPER_CYCLE, 1, 0);
+        }
+
+        private void bHome2_Click(object sender, EventArgs e)
+        {
+            SetSlaveParameter((U8)SLAVE_PARAMS.SPAR_HOME_STEPPER, 1, 0);
+
+        }
+
+        private void bStartCycle3_Click(object sender, EventArgs e)
+        {
+            SetSlaveParameter((U8)SLAVE_PARAMS.SPAR_CYCLE_STEPPER, 2, 0);
+        }
+
+        private void bStopCycle3_Click(object sender, EventArgs e)
+        {
+            SetSlaveParameter((U8)SLAVE_PARAMS.SPAR_STOP_STEPPER_CYCLE, 2, 0);
+        }
+
+        private void bHome3_Click(object sender, EventArgs e)
+        {
+            SetSlaveParameter((U8)SLAVE_PARAMS.SPAR_HOME_STEPPER, 2, 0);
+        }
+
+        private void bStartCycle4_Click(object sender, EventArgs e)
+        {
+            SetSlaveParameter((U8)SLAVE_PARAMS.SPAR_CYCLE_STEPPER, 3, 0);
+        }
+
+        private void bStopCycle4_Click(object sender, EventArgs e)
+        {
+            SetSlaveParameter((U8)SLAVE_PARAMS.SPAR_STOP_STEPPER_CYCLE, 3, 0);
+        }
+
+        private void bHome4_Click(object sender, EventArgs e)
+        {
+            SetSlaveParameter((U8)SLAVE_PARAMS.SPAR_HOME_STEPPER, 3, 0);
+        }
+
+        private void bMovS4_Click(object sender, EventArgs e)
+        {
+            int Steps;
+            Steps = Convert.ToInt32(nudSteps.Value);
+            if (Steps < 0)
+            {
+                SetStep(3, 1000, (U16)(-Steps), 2);
+
+            }
+            else
+            {
+                SetStep(3, 1000, (U16)Steps, 3);
+            }
+
+        }
+
+
     }
 }

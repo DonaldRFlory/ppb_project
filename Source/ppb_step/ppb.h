@@ -15,10 +15,10 @@
 #define MIN_STEP_PERIOD_COUNT  10
 
 #define MAX_INPUT_VALS 10  //four AD Vals, status bits, two step counts, TB_CNT, S2Period and finally TraceBuffCount
-#define S1STEP_IV_IDX   5
-#define S2STEP_IV_IDX   6
-#define RAMP_INFL_IV_IDX  7
-#define S2PER_IV_IDX   8
+#define S1_IV_IDX   5
+#define S2_IV_IDX   6
+#define S3_IV_IDX   7
+#define S4_IV_IDX   8
 #define TBCOUNT_IV_IDX 9
 
 //These are the bit values in port C corresponding to the Analog pins
@@ -37,6 +37,10 @@
 #define IV_LIMIT4_BIT   0X10
 #define IV_S1DIR_BIT    0X20
 #define IV_S2DIR_BIT    0X40
+#define LIMIT1()    ((PINC & A2_BIT) != 0)
+#define LIMIT2()    ((PINC & A3_BIT) != 0)
+#define LIMIT3()    ((PINC & A4_BIT) != 0)
+#define LIMIT4()    ((PINC & A5_BIT) != 0)
 #define MAX_OUTPUT_VALS 6
 
 #define PPF_IDLE    0
@@ -133,6 +137,10 @@
 #define CLR_STEP2()        PORTD |= STEPPER2_STEP_BIT
 
 
+//SetStep Flags bit values
+#define SS_POS_DIR  1
+#define SS_DO_RAMP  2
+
 #define TX_BUFFER_SIZE 63   //max it will actually hold, array size is one byte more
 #define L_FAULT 2
 #define L_IDLE 0
@@ -151,6 +159,13 @@ typedef union
     U8 B[2];
 }BWUnion;
 
+#define MAX_S1_STEPS   7900
+#define MAX_S2_STEPS   39900
+#define MAX_S3_STEPS   55900
+#define MAX_S4_STEPS   7900
+#define BACKOFF_STEPS 10
+#define BACKOUT_STEPS 100
+
 //Thinking of consolidating Step States to include ramping
 //and circular motion. Background manager called frequently computes
 //segments for any active steppers.
@@ -160,11 +175,27 @@ typedef union
 #define ACCEL  10000.0
 #define VELMIN 250.0
 #define VELMAX 12500.0
+#define MIN_PERIOD 1000   //due to VELMIN and PER_CNT_INTRV
 
+//Ramping states
 #define RAMP_IDLE  0
 #define RAMP_UP    1
 #define RAMP_LIM   2
 #define RAMP_DOWN  3
+
+//Cyclic move states
+#define CYCLE_IDLE      0
+#define HOME_INIT       1  //Home commanded, but move not started
+#define HOME_HOME       2  //Moving to home sensor
+#define HOME_WAIT1      3  //Settling a few msec after finding home sensor
+#define HOME_BACKOUT    4  //Moving out of home sensor
+#define HOME_BACKOFF    5  //Moving back from home sensor
+#define CYCLE_START     6  //Cyclic move commanded but not started
+#define CYCLE_POS       7  //Cyclic move, moving in positive direction
+#define CYCLE_NEG       8  //Cyclic move, moving in negative direction
+
+
+
 
 typedef struct
 {
@@ -201,10 +232,12 @@ typedef struct
 typedef struct
 {
     U16 Infl1, Infl2;
-    U16 StepCount, NextStepCount;
+    U16 StepCount, NextStepCount, StepPos;
     float VIncr, Vel;
-    U8 RampState, FullCounts;
+    U8 RampState, CycleState, FullCounts;
+    bool Dir;
     bool Busy;
+    bool NewPeriod; //true means ISR should load a new period
     bool NewMove; //true means ISR should load a new move
                 // after completing current one.
     bool AdjustFlag;

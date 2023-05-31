@@ -7,13 +7,9 @@ U8 RampDivide;
 void InitStepping();
 extern U8 StrBuffer[64];
 extern U8 S2Dir;
-extern U16 S1StepCount, S2StepCount, S3StepCount, S4StepCount;
 extern bool S1LinkControl, S2LinkControl;
 extern U16 T2Count;
 extern bool TickFlag;
-extern ROT_CONTROL RotControl;
-extern ROT_SEG RotSegs[2];
-void RotServe();
 
 extern int XStepsSave, YStepsSave;
 
@@ -22,14 +18,15 @@ extern int XStepsSave, YStepsSave;
 //of x and y creep.
 extern bool CircleStartFlag;
 extern STEP_CTRL StepCtrl[MAX_STEPPERS];
+//#define MAX_INPUT_VALS 10
+//four AD Vals, status bits, two step counts, TB_CNT, S2Period and finally TraceBuffCount
 U16 InputVals[MAX_INPUT_VALS];
 //The Period values will always be 3 counts less than desired (in 4Usec counts) to account for 12 USec step pulse
 
 
 void WriteTraceBuffer(U8* InBuff, U16 Count);
 void SetRampParams(float VMin, float VMax, float Accel);
-extern bool SteppersInterlocked;
-void  DoCycleMove();
+void  DoCycleMove(U8 StepperIndex);
 U8 SetServoUsec(U8 ServoIndex, U16 USec); //in linkfuns.cpp
 void Servo4Serve();                       //in linkfuns.cpp
 extern int  LinkCount;
@@ -109,25 +106,17 @@ extern void Ramp(U8 StepperIndex);
 unsigned long OldMsec;
 void loop()
 {
-  U8 PortC;
   unsigned long temp;
   // put your main code here, to run repeatedly:
 
-
-  if(RotControl.RotActive)
-  {
-    RotServe();
-  }
-
-  PortC = PINC; //direct read of Port C (analog pins)
-  if((PortC & A2_BIT))
+  if(LIMIT1())
   {
     InputVals[4] |= IV_LIMIT1_BIT;
-    if(S2Dir == 0)
+    if(!StepCtrl[0].Dir)
     {
-//        noInterrupts();
-//        S2StepCount = 0;
-//        interrupts();
+        noInterrupts();
+        StepCtrl[0].StepCount = 0;
+        interrupts();
     }
   }
   else
@@ -135,23 +124,29 @@ void loop()
     InputVals[4] &= ~IV_LIMIT1_BIT;
   }
 
-  if((PortC & A3_BIT))
+  if(LIMIT2())
   {
     InputVals[4] |= IV_LIMIT2_BIT;
+    if(!StepCtrl[1].Dir)
+    {
+        noInterrupts();
+        StepCtrl[1].StepCount = 0;
+        interrupts();
+    }
   }
   else
   {
     InputVals[4] &= ~IV_LIMIT2_BIT;
   }
 
-  if((PortC & A4_BIT))
+  if(LIMIT3())
   {
     InputVals[4] |= IV_LIMIT3_BIT;
-    if(S2Dir != 0)
+    if(!StepCtrl[2].Dir)
     {
-//        noInterrupts();
-//        S2StepCount = 0;
-//        interrupts();
+        noInterrupts();
+        StepCtrl[2].StepCount = 0;
+        interrupts();
     }
   }
   else
@@ -159,23 +154,19 @@ void loop()
     InputVals[4] &= ~IV_LIMIT3_BIT;
   }
 
-  if((PortC & A5_BIT))
+  if(LIMIT4())
   {
     InputVals[4] |= IV_LIMIT4_BIT;
+    if(!StepCtrl[3].Dir)
+    {
+      noInterrupts();
+      StepCtrl[3].StepCount = 0;
+      interrupts();
+    }
   }
   else
   {
     InputVals[4] &= ~IV_LIMIT4_BIT;
-  }
-
-  //this is all about capturing total x and y steps taken during a circle and
-  //then setting this flag so that background loop can print them. For debugging
-  //of x and y creep.
-  if(CircleStartFlag)
-  {
-    CircleStartFlag = false;
-    sprintf(StrBuffer, "Circle Start: X = %d, Y = %d\n", XStepsSave, YStepsSave);
-    WriteTraceBuffer(StrBuffer, strlen(StrBuffer));
   }
 
   DoLink();
@@ -185,7 +176,6 @@ void loop()
     //SET_STEP3();
     TickFlag = 0;
     DoMsecTick(); //actually 1.024 msec tick
-    DoCycleMove();
     CLR_TELLTALE();
   }
 }
@@ -360,6 +350,10 @@ void DoMsecTick()
             OCR0A = TCNT0 + 2; //we want to trigger interrupt in 8 USec to sync with timer ISR at start
             TIMSK0 |= _BV(OCIE0A); //enable the interrupt
         }
+        else
+        {
+            DoCycleMove(0);
+        }
       }
       else
       {
@@ -371,13 +365,14 @@ void DoMsecTick()
     case 1:
       if(!(TIMSK0 & _BV(OCIE0B)))  //if inactive
       {
-        if(!SteppersInterlocked)
+        if(StepCtrl[1].StepCount)
         {
-            if(StepCtrl[1].StepCount)
-            {
-                OCR0B = TCNT0 + 2; //we want to trigger interrupt in 8 USec to sync with timer ISR at start
-                TIMSK0 |= _BV(OCIE0B); //enable the interrupt
-            }
+            OCR0B = TCNT0 + 2; //we want to trigger interrupt in 8 USec to sync with timer ISR at start
+            TIMSK0 |= _BV(OCIE0B); //enable the interrupt
+        }
+        else
+        {
+            DoCycleMove(1);
         }
       }
       else
@@ -395,6 +390,10 @@ void DoMsecTick()
             OCR2A = TCNT2 + 2; //we want to trigger interrupt in 8 USec to sync with timer ISR at start
             TIMSK2 |= _BV(OCIE2A); //enable the interrupt
         }
+        else
+        {
+            DoCycleMove(2);
+        }
       }
       else
       {
@@ -410,6 +409,10 @@ void DoMsecTick()
         {
             OCR2B = TCNT2 + 2; //we want to trigger interrupt in 8 USec to sync with timer ISR at start
             TIMSK2 |= _BV(OCIE2B); //enable the interrupt
+        }
+        else
+        {
+            DoCycleMove(3);
         }
       }
       else
@@ -435,38 +438,40 @@ void LoadInputValues()
     {
         InputVals[4] &= ~IV_SWITCH_BIT;
     }
+    //Note: InputVals[4] also has the four limit sensor states loaded into 4 bits.
     noInterrupts();
 
-    InputVals[TBCOUNT_IV_IDX] = TBCount;
+    InputVals[TBCOUNT_IV_IDX] = TBCount;//trace buffer count, index 9
     switch(ParsGroup)
     {
         case 1:
         default:
-            InputVals[S1STEP_IV_IDX] = (U16)RotControl.LastPoint.X;
-            InputVals[S2STEP_IV_IDX] = (U16)RotControl.LastPoint.Y;
-            InputVals[RAMP_INFL_IV_IDX] = (U16)RotControl.Radius;
-            InputVals[S2PER_IV_IDX] = (U16)RotControl.Cycles;
+
+            InputVals[S1_IV_IDX] = StepCtrl[0].StepCount;//index 5
+            InputVals[S2_IV_IDX] = StepCtrl[1].StepCount;//index 6
+            InputVals[S3_IV_IDX] = StepCtrl[2].StepCount;  //index 7
+            InputVals[S4_IV_IDX] = StepCtrl[3].StepCount;      //index 8
             break;
 
         case 2:
-            InputVals[S1STEP_IV_IDX] = (U16)RotSegs[0].XIncr;
-            InputVals[S2STEP_IV_IDX] = (U16)RotSegs[0].YIncr;
-            InputVals[RAMP_INFL_IV_IDX] = (U16)RotSegs[0].Cycles;
-            InputVals[S2PER_IV_IDX] = (U16)RotSegs[0].XAccum;
+            InputVals[S1_IV_IDX] = StepCtrl[0].StepPos; //index 5
+            InputVals[S2_IV_IDX] = StepCtrl[1].StepPos; //index 6
+            InputVals[S3_IV_IDX] = StepCtrl[2].StepPos; //index 7
+            InputVals[S4_IV_IDX] = StepCtrl[3].StepPos; //index 8
             break;
 
         case 3:
-            InputVals[S1STEP_IV_IDX] = (U16)RotSegs[1].XIncr;
-            InputVals[S2STEP_IV_IDX] = (U16)RotSegs[1].YIncr;
-            InputVals[RAMP_INFL_IV_IDX] = (U16)RotSegs[1].Cycles;
-            InputVals[S2PER_IV_IDX] = (U16)RotSegs[1].XAccum;
+            InputVals[S1_IV_IDX] = StepCtrl[0].Period.I; //index 5
+            InputVals[S2_IV_IDX] = StepCtrl[1].Period.I; //index 6
+            InputVals[S3_IV_IDX] = StepCtrl[2].Period.I; //index 7
+            InputVals[S4_IV_IDX] = StepCtrl[3].Period.I; //index 8
             break;
 
         case 4:
-            InputVals[S1STEP_IV_IDX] = (U16)RotSegs[0].FullFlag;
-            InputVals[S2STEP_IV_IDX] = (U16)RotSegs[1].FullFlag;
-            InputVals[RAMP_INFL_IV_IDX] = RotControl.RotActive;
-            InputVals[S2PER_IV_IDX] = 0;
+            InputVals[S1_IV_IDX] = StepCtrl[0].StepPos; //index 5
+            InputVals[S2_IV_IDX] = StepCtrl[1].StepPos; //index 6
+            InputVals[S3_IV_IDX] = StepCtrl[2].StepPos; //index 7
+            InputVals[S4_IV_IDX] = StepCtrl[3].StepPos; //index 8
             break;
 
     }
